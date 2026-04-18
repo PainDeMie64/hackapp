@@ -1,57 +1,76 @@
+import { Hash, BarChart3, Zap } from "lucide-react";
+import type { Prospect } from "../types";
+
 interface Props {
-  status: string;
-  prospectsFound: number;
-  totalRequested: number;
-  isComplete: boolean;
-  error: string | null;
+  prospects: Prospect[];
   sheetUrl: string | null;
+  isComplete: boolean;
 }
 
-export function StatusBar({ status, prospectsFound, totalRequested, isComplete, error, sheetUrl }: Props) {
-  if (!status && !error) return null;
+function avgConfidence(prospects: Prospect[]): number {
+  const map: Record<string, number> = { high: 90, medium: 65, low: 35 };
+  if (prospects.length === 0) return 0;
+  return Math.round(prospects.reduce((s, p) => s + (map[p.confidence] || 50), 0) / prospects.length);
+}
 
-  const progress = totalRequested > 0 ? Math.round((prospectsFound / totalRequested) * 100) : 0;
+function maxConfidence(prospects: Prospect[]): number {
+  const map: Record<string, number> = { high: 90, medium: 65, low: 35 };
+  return Math.max(...prospects.map((p) => map[p.confidence] || 50), 0);
+}
+
+export function StatusBar({ prospects, sheetUrl, isComplete }: Props) {
+  if (prospects.length === 0 && !isComplete) return null;
+
+  const avg = avgConfidence(prospects);
+  const max = maxConfidence(prospects);
 
   return (
-    <div className={`rounded-xl border p-4 ${
-      error ? "bg-red-50 border-red-200" : isComplete ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"
-    }`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2">
-          {!isComplete && !error && (
-            <div className="w-4 h-4 border-2 border-[#0052A5] border-t-transparent rounded-full animate-spin" />
-          )}
-          {isComplete && <span className="text-green-600 font-bold text-lg">&#10003;</span>}
-          {error && <span className="text-red-600 font-bold text-lg">&#10007;</span>}
-          <span className={`text-sm font-medium ${
-            error ? "text-red-700" : isComplete ? "text-green-700" : "text-blue-700"
-          }`}>
-            {error || status}
-          </span>
+    <div className="flex flex-wrap items-center gap-4 bg-white rounded-2xl border border-surface-200 shadow-sm px-6 py-4 animate-entrance">
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center">
+          <Hash className="w-4 h-4 text-brand-500" />
         </div>
-        <div className="flex items-center gap-3">
-          {sheetUrl && (
-            <a
-              href={sheetUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-medium text-[#0052A5] hover:underline"
-            >
-              Ouvrir Google Sheet
-            </a>
-          )}
-          <span className="text-xs font-semibold text-gray-600">
-            {prospectsFound}/{totalRequested} prospects
-          </span>
+        <div>
+          <p className="text-xs text-surface-400">Résultats</p>
+          <p className="text-sm font-bold text-surface-900">{prospects.length}</p>
         </div>
       </div>
-      {!isComplete && !error && totalRequested > 0 && (
-        <div className="w-full bg-blue-100 rounded-full h-2">
-          <div
-            className="bg-[#0052A5] h-2 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
+
+      <div className="w-px h-8 bg-surface-200" />
+
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-brand-50 flex items-center justify-center">
+          <BarChart3 className="w-4 h-4 text-brand-500" />
         </div>
+        <div>
+          <p className="text-xs text-surface-400">Confiance moy.</p>
+          <p className="text-sm font-bold text-surface-900">{avg}%</p>
+        </div>
+      </div>
+
+      <div className="w-px h-8 bg-surface-200" />
+
+      <div className="flex items-center gap-3">
+        <div className="w-8 h-8 rounded-lg bg-score-high-bg flex items-center justify-center">
+          <Zap className="w-4 h-4 text-score-high" />
+        </div>
+        <div>
+          <p className="text-xs text-surface-400">Max</p>
+          <p className="text-sm font-bold text-surface-900">{max}%</p>
+        </div>
+      </div>
+
+      <div className="flex-1" />
+
+      {sheetUrl && (
+        <a
+          href={sheetUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-sm font-medium text-brand-500 hover:text-brand-600 transition-colors"
+        >
+          Ouvrir Google Sheet →
+        </a>
       )}
     </div>
   );
