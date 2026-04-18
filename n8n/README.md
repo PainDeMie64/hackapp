@@ -5,13 +5,34 @@ Local n8n workflow for the ALTEN Commercial Intelligence & Prospecting use case.
 ## Quick Start
 
 ```bash
-# From the repo root
-./n8n/setup.sh
+npm run n8n
 ```
 
 Opens n8n at http://localhost:5679 with the workflow pre-imported.
 
 Login: `admin@hackapp.dev` / `HackApp2026!`
+
+## Team Collaboration
+
+Workflows are stored as JSON files in this directory. The git repo is the source of truth.
+
+**After editing a workflow in the n8n UI:**
+
+```bash
+npm run n8n:export    # saves all workflows from n8n → n8n/*.workflow.json
+git add n8n/
+git commit -m "Update prospect workflow"
+git push
+```
+
+**After pulling changes from a teammate:**
+
+```bash
+git pull
+npm run n8n:import    # pushes n8n/*.workflow.json → your running n8n
+```
+
+This means: edit visually in n8n, export to git, push. Teammates pull and import. No manual JSON editing needed.
 
 ## Workflow Overview
 

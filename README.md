@@ -64,6 +64,8 @@ Frontend (POST /webhook/prospect-search)
 |---------|-------------|
 | `npm run dev` | Start SvelteKit dev server |
 | `npm run n8n` | Start n8n + import prospect workflow |
+| `npm run n8n:export` | Export workflows from n8n UI → git |
+| `npm run n8n:import` | Import workflows from git → running n8n |
 | `npm run build` | Production build |
 | `npm run check` | Type check |
 | `npm run deploy` | Build + deploy to Cloudflare Pages |
@@ -85,8 +87,10 @@ src/
     +page.svelte     Landing page
     api/health/      Health check endpoint
 n8n/
-  prospect-agent.workflow.json   n8n workflow definition
-  setup.sh                       Launch + auto-import script
+  *.workflow.json   Workflow definitions (git-tracked)
+  setup.sh          Launch + auto-import script
+  import.mjs        Push git → n8n
+  export.mjs        Pull n8n → git
 ```
 
 ## Deploy
