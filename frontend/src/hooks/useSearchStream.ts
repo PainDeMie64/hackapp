@@ -31,7 +31,10 @@ export function useSearchStream(searchId: string | null): StreamState {
   }, []);
 
   useEffect(() => {
-    if (!searchId) return;
+    if (!searchId) {
+      reset();
+      return;
+    }
     reset();
 
     const eventSource = new EventSource(`/api/search/${searchId}/stream`);
