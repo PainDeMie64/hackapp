@@ -46,19 +46,35 @@ curl -sf -c "$COOKIE_FILE" -X POST "http://localhost:$N8N_PORT/rest/login" \
 COOKIE=$(grep n8n-auth "$COOKIE_FILE" | awk '{print $NF}')
 rm -f "$COOKIE_FILE"
 
-if [ -n "$COOKIE" ] && [ -f "$WORKFLOW_FILE" ]; then
-  echo "==> Importing workflow..."
-  curl -sf -X POST "http://localhost:$N8N_PORT/rest/workflows" \
-    -H "Cookie: n8n-auth=$COOKIE" \
-    -H 'Content-Type: application/json' \
-    -d @"$WORKFLOW_FILE" > /dev/null 2>&1 && echo "==> Workflow imported!" || echo "==> Workflow may already exist, check the UI."
-fi
+# Import all workflows from git
+echo "==> Importing workflows..."
+N8N_URL="http://localhost:$N8N_PORT" node "$N8N_DIR/import.mjs" 2>/dev/null || {
+  # Fallback: direct POST for first-time setup
+  if [ -n "$COOKIE" ] && [ -f "$WORKFLOW_FILE" ]; then
+    curl -sf -X POST "http://localhost:$N8N_PORT/rest/workflows" \
+      -H "Cookie: n8n-auth=$COOKIE" \
+      -H 'Content-Type: application/json' \
+      -d @"$WORKFLOW_FILE" > /dev/null 2>&1 && echo "==> Workflow imported!" || echo "==> Workflow may already exist, check the UI."
+  fi
+}
+
+# Start auto-export watcher
+echo "==> Starting auto-export watcher..."
+N8N_USER_FOLDER="$N8N_USER_FOLDER" node "$N8N_DIR/watch.mjs" &
+WATCH_PID=$!
+
+cleanup() {
+  kill $WATCH_PID 2>/dev/null
+  kill $N8N_PID 2>/dev/null
+}
+trap cleanup EXIT INT TERM
 
 echo ""
 echo "  n8n UI:      http://localhost:$N8N_PORT"
 echo "  Login:       admin@hackapp.dev / HackApp2026!"
 echo "  Webhook URL: http://localhost:$N8N_PORT/webhook/prospect-search"
+echo "  Auto-export: ON (saves to n8n/*.workflow.json on every edit)"
 echo ""
-echo "  Press Ctrl+C to stop n8n."
+echo "  Press Ctrl+C to stop."
 
 wait $N8N_PID
