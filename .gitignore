@@ -40,3 +40,6 @@ npm-debug.log*
 
 # Generated types (re-generate with npm run cf-typegen)
 src/worker-configuration.d.ts
+
+# Event context (local only)
+EVENT_CONTEXT.md
