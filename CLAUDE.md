@@ -7,9 +7,6 @@ ALTEN Commercial Intelligence & Prospecting Agent for the AI For Business Hackat
 - Tailwind CSS v4 (via @tailwindcss/vite, @theme in app.css)
 - TypeScript strict mode
 - Drizzle ORM + Cloudflare D1 (SQLite on the edge)
-- n8n (local workflow engine for AI prospecting agent)
-- OpenAI (prospect analysis, market reports)
-- Google Sheets (real-time prospect database)
 - Cloudflare Pages deployment
 - Lucide icons (lucide-svelte)
 - Zod for validation
@@ -21,17 +18,16 @@ ALTEN Commercial Intelligence & Prospecting Agent for the AI For Business Hackat
 - `src/lib/server/db/` — Drizzle schema and db helper
 - `src/routes/api/` — API endpoints (+server.ts files)
 - `drizzle/` — generated migrations
-- `n8n/` — workflow JSON, setup/import/export/watch scripts
+- `scripts/` — db sync scripts
 
 ## Commands
-- `npm start` — launch everything (web app on 5173 + n8n on 5679 + D1)
+- `npm start` — build + launch with Cloudflare D1 (port 5173)
 - `npm run dev` — SvelteKit only (Vite dev server, no D1)
-- `npm run n8n` — n8n only + import workflows + auto-export watcher
-- `npm run n8n:export` — export workflows from n8n UI to git
-- `npm run n8n:import` — import workflows from git to running n8n
 - `npm run build` — production build
-- `npm run check` — type check (requires cf-typegen to have run once)
+- `npm run check` — type check
 - `npm run deploy` — build + deploy to Cloudflare Pages
+- `npm run db:push` — overwrite remote D1 with local data
+- `npm run db:pull` — overwrite local D1 with remote data
 - `npm run db:generate` — generate Drizzle migrations
 - `npm run db:migrate:local` — apply migrations locally
 - `npm run cf-typegen` — regenerate Cloudflare env types
@@ -46,11 +42,10 @@ ALTEN Commercial Intelligence & Prospecting Agent for the AI For Business Hackat
 - Use `platform.env.DB` to access D1 in server routes/load functions
 - Color tokens: brand-* (primary), surface-* (neutral) — defined in app.css @theme
 - Dark mode via `dark:` prefix, toggled by html class
-- n8n webhook is at `http://localhost:5679/webhook-test/prospect-search` (dev) or `/webhook/prospect-search` (when workflow is active)
-- n8n credentials (OpenAI, Google Sheets) are configured in the n8n UI, not in .env files
 
 ## Setup on Fresh Clone
 ```bash
-npm install          # also runs cf-typegen via prepare script
-npm start            # launches web app + n8n + D1 — one command
+cp .env.example .env   # fill in CLOUDFLARE_API_TOKEN
+npm install
+npm start
 ```
