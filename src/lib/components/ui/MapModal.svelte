@@ -77,7 +77,7 @@
 
 		try {
 			const resp = await fetch(url);
-			const geojson = await resp.json();
+			const geojson = await resp.json() as any;
 
 			geoLayer = L.geoJSON(geojson, {
 				style: () => ({

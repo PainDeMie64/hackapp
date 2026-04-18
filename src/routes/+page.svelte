@@ -54,8 +54,31 @@
 			<div class="relative">
 				<p class="text-sm font-semibold text-surface-400 uppercase tracking-wide mb-3">Prospects</p>
 				{#if data.companyCount > 0}
-					<h2 class="text-xl font-bold text-surface-900 mb-3">{data.companyCount} entreprises suivies</h2>
-					<p class="text-base text-surface-400 mb-5">Consultez la liste des prospects identifies et scores.</p>
+					<h2 class="text-xl font-bold text-surface-900 mb-2">{data.companyCount} entreprises suivies</h2>
+					<div class="flex flex-wrap gap-2 mb-4">
+						{#if data.bandBreakdown.hot > 0}
+							<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-score-high-bg text-score-high border border-score-high/20">{data.bandBreakdown.hot} Hot</span>
+						{/if}
+						{#if data.bandBreakdown.warm > 0}
+							<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-score-mid-bg text-score-mid border border-score-mid/20">{data.bandBreakdown.warm} Warm</span>
+						{/if}
+						{#if data.bandBreakdown.qualified > 0}
+							<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200">{data.bandBreakdown.qualified} Qualified</span>
+						{/if}
+						{#if data.bandBreakdown.cold > 0}
+							<span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-surface-100 text-surface-500 border border-surface-200">{data.bandBreakdown.cold} Cold</span>
+						{/if}
+					</div>
+					{#if data.topProspects.length > 0}
+						<div class="flex flex-col gap-2 mb-5">
+							{#each data.topProspects as p}
+								<div class="flex items-center justify-between text-sm">
+									<span class="font-medium text-surface-700">{p.name}</span>
+									<span class="font-bold {p.band === 'Hot' ? 'text-score-high' : p.band === 'Warm' ? 'text-score-mid' : 'text-surface-500'}">{p.score}/100</span>
+								</div>
+							{/each}
+						</div>
+					{/if}
 					<a href="/resultats" class="inline-flex items-center justify-center font-medium rounded-xl transition-all duration-200 cursor-pointer bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700 shadow-sm text-base px-6 py-3.5 gap-2.5 w-full text-lg">
 						Voir les resultats
 						<ArrowRight class="h-5 w-5 ml-1" />

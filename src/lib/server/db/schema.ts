@@ -257,6 +257,31 @@ export const prospectScores = sqliteTable('prospect_scores', {
 });
 
 // ---------------------------------------------------------------------------
+// Search history — tracks prospecting searches launched by the user
+// ---------------------------------------------------------------------------
+export const searches = sqliteTable('searches', {
+	id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+	sector: text('sector').notNull(),
+	regions: text('regions'),
+	prospectCount: integer('prospect_count'),
+	freeConditions: text('free_conditions'),
+	minRevenue: integer('min_revenue'),
+	minHeadcount: integer('min_headcount'),
+	growthPotential: text('growth_potential'),
+	consultingUsage: text('consulting_usage'),
+	status: text('status').default('pending'),
+	resultCount: integer('result_count'),
+	bestScore: integer('best_score'),
+	errorMessage: text('error_message'),
+	startedAt: integer('started_at', { mode: 'timestamp' }),
+	completedAt: integer('completed_at', { mode: 'timestamp' }),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+}, (table) => ([
+	index('searches_status').on(table.status),
+	index('searches_created_at').on(table.createdAt)
+]));
+
+// ---------------------------------------------------------------------------
 // Type exports
 // ---------------------------------------------------------------------------
 export type Source = typeof sources.$inferSelect;
@@ -271,3 +296,5 @@ export type ScrapeResult = typeof scrapeResults.$inferSelect;
 export type NewScrapeResult = typeof scrapeResults.$inferInsert;
 export type ProspectScore = typeof prospectScores.$inferSelect;
 export type NewProspectScore = typeof prospectScores.$inferInsert;
+export type Search = typeof searches.$inferSelect;
+export type NewSearch = typeof searches.$inferInsert;

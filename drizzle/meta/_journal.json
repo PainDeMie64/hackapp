@@ -22,6 +22,41 @@
       "when": 1776586800000,
       "tag": "0002_add_scoring",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1776586900000,
+      "tag": "0002_scrape_results",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1776587000000,
+      "tag": "0003_add_is_priority",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1776587100000,
+      "tag": "0003_scrape_results_v2",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1776587200000,
+      "tag": "0004_prospect_scores",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1776587300000,
+      "tag": "0005_add_searches",
+      "breakpoints": true
     }
   ]
 }

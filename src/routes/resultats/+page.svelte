@@ -9,7 +9,6 @@
 		BarChart3,
 		ArrowUpDown,
 		Hash,
-		TrendingUp,
 		Zap,
 		ChevronRight,
 		Search
@@ -47,7 +46,7 @@
 		</a>
 		<span class="text-surface-300">|</span>
 		<p class="text-lg font-medium text-surface-500">
-			Aeronautique, Pays de la Loire
+			{totalResults} prospect{totalResults > 1 ? 's' : ''} dans la base
 		</p>
 	</div>
 
@@ -157,11 +156,10 @@
 				</div>
 
 				<div
-					class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-6 pb-6 border-b border-surface-200"
+					class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-6 pb-6 border-b border-surface-200"
 				>
 					<MetricCell label="Effectif" value={formatEmployees(hero.employeeCount)} />
 					<MetricCell label="Chiffre d'affaires" value={formatRevenue(hero.revenueEur)} />
-					<MetricCell label="Croissance" value={hero.growth ?? 'N/A'} />
 					<MetricCell label="Secteur" value={hero.sector ?? 'N/A'} />
 					<MetricCell label="Localisation" value={hero.locationCity ?? 'N/A'} />
 				</div>
@@ -239,14 +237,6 @@
 							</div>
 							<p class="text-base text-surface-400">
 								{p.sector ?? 'N/A'} · {formatEmployees(p.employeeCount)} sal. · {formatRevenue(p.revenueEur)}
-								{#if p.growth}
-									<span
-										class="inline-flex items-center gap-0.5 text-score-high font-medium"
-									>
-										<TrendingUp class="h-3.5 w-3.5" />
-										{p.growth}
-									</span>
-								{/if}
 							</p>
 							<p class="text-base text-surface-500 italic mt-1">
 								{p.reason}
