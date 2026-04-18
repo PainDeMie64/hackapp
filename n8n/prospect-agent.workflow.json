@@ -7,7 +7,7 @@
         "path": "prospect-search",
         "responseMode": "lastNode",
         "options": {
-          "allowedOrigins": "*"
+          "allowedOrigins": "http://localhost:5173"
         }
       },
       "id": "webhook-trigger",
@@ -22,7 +22,7 @@
           "assignments": [
             { "id": "sector", "name": "sector", "value": "={{ $json.body.sector }}", "type": "string" },
             { "id": "location", "name": "location", "value": "={{ $json.body.location }}", "type": "string" },
-            { "id": "count", "name": "count", "value": "={{ $json.body.count || 10 }}", "type": "number" },
+            { "id": "count", "name": "count", "value": "={{ Math.min($json.body.count || 10, 10) }}", "type": "number" },
             { "id": "criteria", "name": "criteria", "value": "={{ $json.body.criteria || '' }}", "type": "string" },
             { "id": "metrics", "name": "metrics", "value": "={{ $json.body.metrics || '' }}", "type": "string" }
           ]
@@ -43,7 +43,7 @@
             { "name": "key", "value": "={{ $env.GOOGLE_SEARCH_API_KEY }}" },
             { "name": "cx", "value": "={{ $env.GOOGLE_SEARCH_ENGINE_ID }}" },
             { "name": "q", "value": "={{ $json.sector }} companies {{ $json.location }} {{ $json.criteria }}" },
-            { "name": "num", "value": "10" }
+            { "name": "num", "value": "={{ $json.count }}" }
           ]
         },
         "options": {}
@@ -108,40 +108,18 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": { "caseSensitive": true, "leftValue": "", "typeValidation": "strict" },
-          "conditions": [
-            {
-              "id": "filter-skip",
-              "leftValue": "={{ $json.message.content }}",
-              "rightValue": "skip",
-              "operator": { "type": "string", "operation": "notContains" }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
-      },
-      "id": "filter-valid",
-      "name": "Filter Valid Prospects",
-      "type": "n8n-nodes-base.filter",
-      "typeVersion": 2.2,
-      "position": [1540, 300]
-    },
-    {
-      "parameters": {
         "jsCode": "const content = $input.item.json.message?.content || $input.item.json.text || '{}';\ntry {\n  const parsed = JSON.parse(content);\n  if (parsed.skip) return [];\n  parsed.analyzed_at = new Date().toISOString();\n  return [{ json: parsed }];\n} catch(e) {\n  return [];\n}"
       },
       "id": "parse-json",
       "name": "Parse AI Response",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [1760, 300]
+      "position": [1540, 300]
     },
     {
       "parameters": {
         "operation": "append",
-        "documentId": { "__rl": true, "mode": "url", "value": "={{ $env.GOOGLE_SHEET_ID }}" },
+        "documentId": { "__rl": true, "mode": "id", "value": "={{ $env.GOOGLE_SHEET_ID }}" },
         "sheetName": { "__rl": true, "mode": "byName", "value": "Prospects" },
         "columns": {
           "mappingMode": "autoMapInputData",
@@ -153,7 +131,7 @@
       "name": "Google Sheets - Save Prospect",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
-      "position": [1980, 300]
+      "position": [1760, 300]
     },
     {
       "parameters": {
@@ -164,7 +142,7 @@
       "name": "Aggregate All Prospects",
       "type": "n8n-nodes-base.aggregate",
       "typeVersion": 1,
-      "position": [1980, 520]
+      "position": [1760, 520]
     },
     {
       "parameters": {
@@ -188,7 +166,7 @@
       "name": "AI - Market Analysis Report",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
-      "position": [2200, 520]
+      "position": [1980, 520]
     },
     {
       "parameters": {
@@ -203,7 +181,7 @@
       "name": "Format Report",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [2420, 520]
+      "position": [2200, 520]
     },
     {
       "parameters": {
@@ -218,13 +196,15 @@
             { "name": "language", "value": "en" }
           ]
         },
-        "options": {}
+        "options": {
+          "allowUnauthorizedCerts": false
+        }
       },
       "id": "news-search",
       "name": "News API - Sector News",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1980, 740]
+      "position": [1760, 740]
     },
     {
       "parameters": {
@@ -246,19 +226,20 @@
       "name": "AI - News Digest",
       "type": "@n8n/n8n-nodes-langchain.openAi",
       "typeVersion": 1.8,
-      "position": [2200, 740]
+      "position": [1980, 740]
     },
     {
       "parameters": {
         "mode": "combine",
         "mergeByPosition": true,
+        "joinMode": "enrichInput1",
         "options": {}
       },
       "id": "merge-outputs",
       "name": "Merge Report + News",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 3.1,
-      "position": [2640, 620]
+      "position": [2420, 620]
     },
     {
       "parameters": {
@@ -275,7 +256,7 @@
       "name": "Build Response",
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
-      "position": [2860, 620]
+      "position": [2640, 620]
     }
   ],
   "connections": {
@@ -295,9 +276,6 @@
       "main": [[{ "node": "AI - Analyze Prospect", "type": "main", "index": 0 }]]
     },
     "AI - Analyze Prospect": {
-      "main": [[{ "node": "Filter Valid Prospects", "type": "main", "index": 0 }]]
-    },
-    "Filter Valid Prospects": {
       "main": [[{ "node": "Parse AI Response", "type": "main", "index": 0 }]]
     },
     "Parse AI Response": {

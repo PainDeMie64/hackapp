@@ -35,9 +35,6 @@ vite.config.ts.timestamp-*
 *.log
 npm-debug.log*
 
-# D1 local database
-.wrangler/
-
 # Generated types (re-generate with npm run cf-typegen)
 src/worker-configuration.d.ts
 

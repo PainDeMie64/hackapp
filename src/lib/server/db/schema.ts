@@ -6,7 +6,7 @@ export const users = sqliteTable('users', {
 	name: text('name').notNull(),
 	avatarUrl: text('avatar_url'),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date())
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()).$onUpdateFn(() => new Date())
 });
 
 export type User = typeof users.$inferSelect;

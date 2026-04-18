@@ -5,11 +5,13 @@
 	interface Props extends HTMLInputAttributes {
 		label?: string;
 		error?: string;
+		value?: string | number | null;
 	}
 
-	let { label, error, class: className, id, ...rest }: Props = $props();
+	let { label, error, value = $bindable(''), class: className, id, ...rest }: Props = $props();
 
-	let inputId = $derived(id ?? crypto.randomUUID());
+	const fallbackId = crypto.randomUUID();
+	let inputId = $derived(id ?? fallbackId);
 </script>
 
 <div class="flex flex-col gap-1.5">
@@ -20,6 +22,7 @@
 	{/if}
 	<input
 		id={inputId}
+		bind:value
 		class={cn(
 			'w-full rounded-lg border px-3 py-2 text-sm transition-colors',
 			'bg-white dark:bg-surface-900',

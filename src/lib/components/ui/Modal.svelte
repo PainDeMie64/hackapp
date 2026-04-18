@@ -25,19 +25,18 @@
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') handleBackdrop();
+		if (open && e.key === 'Escape') handleBackdrop();
 	}
 </script>
 
+<svelte:window onkeydown={handleKeydown} />
+
 {#if open}
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<!-- svelte-ignore a11y_interactive_supports_focus -->
 	<div
 		class="fixed inset-0 z-50 flex items-center justify-center p-4"
 		role="dialog"
 		aria-modal="true"
 		aria-label={title ?? 'Dialog'}
-		onkeydown={handleKeydown}
 	>
 		<button
 			class="absolute inset-0 bg-black/50 backdrop-blur-sm cursor-default"

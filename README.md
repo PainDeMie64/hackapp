@@ -4,6 +4,12 @@ ALTEN Commercial Intelligence & Prospecting Agent — built for the AI For Busin
 
 AI-powered prospecting tool that automatically finds companies in a target sector, analyzes them, saves structured data to Google Sheets, and generates market + news reports.
 
+## Prerequisites
+
+- **Node.js 18+** (uses native `fetch`)
+- **npm**
+- **n8n** — installed globally (`npm install -g n8n`) or auto-downloaded via npx on first run
+
 ## Stack
 
 - **SvelteKit 5** — runes, snippets, TypeScript strict mode
@@ -20,27 +26,31 @@ AI-powered prospecting tool that automatically finds companies in a target secto
 git clone git@github.com:PainDeMie64/hackapp.git
 cd hackapp
 npm install
-npm run dev
 ```
 
-Open [http://localhost:5173](http://localhost:5173).
+Run both in separate terminals:
+
+```bash
+npm run dev          # SvelteKit frontend → http://localhost:5173
+npm run n8n          # n8n workflow engine → http://localhost:5679
+```
+
+The frontend and n8n must both be running for the prospecting agent to work.
 
 ## n8n Workflow (Prospect Agent)
-
-The AI prospecting agent runs as a local n8n workflow.
 
 ```bash
 npm run n8n
 ```
 
-This starts n8n at [http://localhost:5679](http://localhost:5679), creates an admin account, and imports the workflow.
+Starts n8n at [http://localhost:5679](http://localhost:5679), creates an admin account, imports workflows, and starts an auto-export watcher.
 
 **Login:** `admin@hackapp.dev` / `HackApp2026!`
 
 ### How it works
 
 ```
-Frontend (POST /webhook/prospect-search)
+Frontend (POST /webhook-test/prospect-search)
   → Google Custom Search (find companies by sector + location)
   → AI analysis per company (OpenAI — structured prospect data)
   → Google Sheets (save each prospect in real time)
@@ -48,22 +58,37 @@ Frontend (POST /webhook/prospect-search)
   → JSON response back to frontend
 ```
 
+Use `/webhook-test/...` during development. Use `/webhook/...` when the workflow is activated in n8n.
+
 ### Required credentials (configure in n8n UI)
+
+Each team member must configure these in their local n8n after first run — credentials are not shared via git.
 
 1. **OpenAI** — API key for prospect analysis + reports
 2. **Google Sheets** — OAuth2 for writing prospect data
 3. **Google Custom Search** — set as n8n environment variables:
    - `GOOGLE_SEARCH_API_KEY`
    - `GOOGLE_SEARCH_ENGINE_ID`
-   - `GOOGLE_SHEET_ID`
+   - `GOOGLE_SHEET_ID` (the sheet ID, not the full URL)
 4. **News API** (optional) — `NEWS_API_KEY` from newsapi.org
+
+### Collaborating on workflows
+
+Workflows auto-export to `n8n/*.workflow.json` when you save in the n8n UI.
+
+```bash
+git add n8n/ && git commit -m "Update workflow" && git push    # share your changes
+git pull && npm run n8n:import                                  # get teammate's changes
+```
+
+**Important:** Only one person should edit a given workflow at a time. Concurrent edits will cause JSON merge conflicts that are hard to resolve by hand.
 
 ## Scripts
 
 | Command | What it does |
 |---------|-------------|
-| `npm run dev` | Start SvelteKit dev server |
-| `npm run n8n` | Start n8n + import prospect workflow |
+| `npm run dev` | Start SvelteKit dev server (port 5173) |
+| `npm run n8n` | Start n8n + import + auto-export watcher (port 5679) |
 | `npm run n8n:export` | Export workflows from n8n UI → git |
 | `npm run n8n:import` | Import workflows from git → running n8n |
 | `npm run build` | Production build |
@@ -88,9 +113,10 @@ src/
     api/health/      Health check endpoint
 n8n/
   *.workflow.json   Workflow definitions (git-tracked)
-  setup.sh          Launch + auto-import script
+  setup.sh          Launch + auto-import + watcher
   import.mjs        Push git → n8n
   export.mjs        Pull n8n → git
+  watch.mjs         Auto-export on workflow save
 ```
 
 ## Deploy

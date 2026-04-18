@@ -2,10 +2,10 @@
 set -euo pipefail
 
 N8N_PORT=${N8N_PORT:-5679}
+N8N_EMAIL=${N8N_EMAIL:-admin@hackapp.dev}
+N8N_PASSWORD=${N8N_PASSWORD:-HackApp2026!}
 N8N_DIR="$(cd "$(dirname "$0")" && pwd)"
-WORKFLOW_FILE="$N8N_DIR/prospect-agent.workflow.json"
 
-echo "==> Starting n8n on port $N8N_PORT..."
 export N8N_PORT=$N8N_PORT
 export N8N_SECURE_COOKIE=false
 export N8N_RUNNERS_DISABLED=true
@@ -13,66 +13,51 @@ export N8N_USER_FOLDER="$N8N_DIR/.n8n-data"
 
 mkdir -p "$N8N_USER_FOLDER"
 
-# Start n8n in the background
+if command -v lsof &>/dev/null && lsof -i :"$N8N_PORT" -sTCP:LISTEN >/dev/null 2>&1; then
+  echo "ERROR: Port $N8N_PORT is already in use" >&2
+  exit 1
+fi
+
+echo "==> Starting n8n on port $N8N_PORT..."
 npx n8n start &
 N8N_PID=$!
+trap "kill $N8N_PID 2>/dev/null" EXIT INT TERM
 
 echo "==> Waiting for n8n to be ready..."
+N8N_READY=false
 for i in $(seq 1 30); do
   if curl -sf "http://localhost:$N8N_PORT/healthz" > /dev/null 2>&1; then
     echo "==> n8n is ready at http://localhost:$N8N_PORT"
+    N8N_READY=true
     break
   fi
   sleep 2
 done
 
-# Check if owner setup is needed
-NEEDS_SETUP=$(curl -sf "http://localhost:$N8N_PORT/rest/settings" 2>/dev/null | python3 -c "import sys,json; d=json.load(sys.stdin); print('yes' if d.get('data',{}).get('userManagement',{}).get('showSetupOnFirstLoad') else 'no')" 2>/dev/null || echo "yes")
-
-if [ "$NEEDS_SETUP" = "yes" ]; then
-  echo "==> Setting up owner account..."
-  curl -sf -X POST "http://localhost:$N8N_PORT/rest/owner/setup" \
-    -H 'Content-Type: application/json' \
-    -d '{"email":"admin@hackapp.dev","firstName":"Admin","lastName":"HackApp","password":"HackApp2026!"}' > /dev/null 2>&1 || true
+if [ "$N8N_READY" = "false" ]; then
+  echo "ERROR: n8n did not start within 60 seconds" >&2
+  exit 1
 fi
 
-# Login and get cookie
-echo "==> Logging in..."
-COOKIE_FILE=$(mktemp)
-curl -sf -c "$COOKIE_FILE" -X POST "http://localhost:$N8N_PORT/rest/login" \
+# Set up owner account if needed
+curl -sf -X POST "http://localhost:$N8N_PORT/rest/owner/setup" \
   -H 'Content-Type: application/json' \
-  -d '{"email":"admin@hackapp.dev","password":"HackApp2026!"}' > /dev/null
-
-COOKIE=$(grep n8n-auth "$COOKIE_FILE" | awk '{print $NF}')
-rm -f "$COOKIE_FILE"
+  -d "{\"email\":\"$N8N_EMAIL\",\"firstName\":\"Admin\",\"lastName\":\"HackApp\",\"password\":\"$N8N_PASSWORD\"}" > /dev/null 2>&1 || true
 
 # Import all workflows from git
 echo "==> Importing workflows..."
-N8N_URL="http://localhost:$N8N_PORT" node "$N8N_DIR/import.mjs" 2>/dev/null || {
-  # Fallback: direct POST for first-time setup
-  if [ -n "$COOKIE" ] && [ -f "$WORKFLOW_FILE" ]; then
-    curl -sf -X POST "http://localhost:$N8N_PORT/rest/workflows" \
-      -H "Cookie: n8n-auth=$COOKIE" \
-      -H 'Content-Type: application/json' \
-      -d @"$WORKFLOW_FILE" > /dev/null 2>&1 && echo "==> Workflow imported!" || echo "==> Workflow may already exist, check the UI."
-  fi
-}
+N8N_URL="http://localhost:$N8N_PORT" node "$N8N_DIR/import.mjs" || echo "==> Import failed — check credentials or workflow JSON."
 
 # Start auto-export watcher
 echo "==> Starting auto-export watcher..."
-N8N_USER_FOLDER="$N8N_USER_FOLDER" node "$N8N_DIR/watch.mjs" &
+N8N_URL="http://localhost:$N8N_PORT" N8N_USER_FOLDER="$N8N_USER_FOLDER" node "$N8N_DIR/watch.mjs" &
 WATCH_PID=$!
-
-cleanup() {
-  kill $WATCH_PID 2>/dev/null
-  kill $N8N_PID 2>/dev/null
-}
-trap cleanup EXIT INT TERM
+trap "kill $WATCH_PID 2>/dev/null; kill $N8N_PID 2>/dev/null" EXIT INT TERM
 
 echo ""
 echo "  n8n UI:      http://localhost:$N8N_PORT"
-echo "  Login:       admin@hackapp.dev / HackApp2026!"
-echo "  Webhook URL: http://localhost:$N8N_PORT/webhook/prospect-search"
+echo "  Login:       $N8N_EMAIL / $N8N_PASSWORD"
+echo "  Webhook URL: http://localhost:$N8N_PORT/webhook-test/prospect-search"
 echo "  Auto-export: ON (saves to n8n/*.workflow.json on every edit)"
 echo ""
 echo "  Press Ctrl+C to stop."

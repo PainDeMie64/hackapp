@@ -4,8 +4,8 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const N8N_URL = process.env.N8N_URL || 'http://localhost:5679';
-const EMAIL = 'admin@hackapp.dev';
-const PASSWORD = 'HackApp2026!';
+const EMAIL = process.env.N8N_EMAIL || 'admin@hackapp.dev';
+const PASSWORD = process.env.N8N_PASSWORD || 'HackApp2026!';
 
 async function login() {
   const res = await fetch(`${N8N_URL}/rest/login`, {

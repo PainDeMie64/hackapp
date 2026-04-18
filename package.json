@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "npm run build && wrangler pages dev",
-    "prepare": "svelte-kit sync || echo ''",
+    "prepare": "svelte-kit sync && (wrangler types src/worker-configuration.d.ts 2>/dev/null || echo '')",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "deploy": "npm run build && wrangler pages deploy",
@@ -38,6 +38,7 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
     "lucide-svelte": "^1.0.1",
+    "tailwind-merge": "^3.5.0",
     "zod": "^4.3.6"
   }
 }

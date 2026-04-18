@@ -6,12 +6,14 @@
 	interface Props extends HTMLSelectAttributes {
 		label?: string;
 		error?: string;
+		value?: string;
 		children: Snippet;
 	}
 
-	let { label, error, children, class: className, id, ...rest }: Props = $props();
+	let { label, error, value = $bindable(''), children, class: className, id, ...rest }: Props = $props();
 
-	let selectId = $derived(id ?? crypto.randomUUID());
+	const fallbackId = crypto.randomUUID();
+	let selectId = $derived(id ?? fallbackId);
 </script>
 
 <div class="flex flex-col gap-1.5">
@@ -22,6 +24,7 @@
 	{/if}
 	<select
 		id={selectId}
+		bind:value
 		class={cn(
 			'w-full rounded-lg border px-3 py-2 text-sm transition-colors appearance-none',
 			'bg-white dark:bg-surface-900',

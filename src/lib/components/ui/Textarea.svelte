@@ -5,11 +5,13 @@
 	interface Props extends HTMLTextareaAttributes {
 		label?: string;
 		error?: string;
+		value?: string;
 	}
 
-	let { label, error, class: className, id, ...rest }: Props = $props();
+	let { label, error, value = $bindable(''), class: className, id, ...rest }: Props = $props();
 
-	let textareaId = $derived(id ?? crypto.randomUUID());
+	const fallbackId = crypto.randomUUID();
+	let textareaId = $derived(id ?? fallbackId);
 </script>
 
 <div class="flex flex-col gap-1.5">
@@ -20,6 +22,7 @@
 	{/if}
 	<textarea
 		id={textareaId}
+		bind:value
 		class={cn(
 			'w-full rounded-lg border px-3 py-2 text-sm transition-colors resize-y min-h-[80px]',
 			'bg-white dark:bg-surface-900',
