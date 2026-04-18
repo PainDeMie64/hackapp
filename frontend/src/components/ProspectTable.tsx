@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Trophy, Sparkles, ChevronRight, Users, Building2, MapPin, TrendingUp, Globe } from "lucide-react";
+import { Trophy, Sparkles, ChevronRight, Users, Building2, MapPin, TrendingUp, Globe, ExternalLink } from "lucide-react";
 import clsx from "clsx";
 import type { Prospect } from "../types";
 import { CompanyAvatar } from "./CompanyAvatar";
@@ -75,11 +75,22 @@ function HeroCard({ prospect }: { prospect: Prospect }) {
           )}
 
           {/* Sources */}
-          {prospect.website && (
-            <a href={prospect.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs text-brand-500 hover:text-brand-600 font-medium">
-              <Globe className="w-3.5 h-3.5" /> {prospect.website}
-            </a>
-          )}
+          <div className="flex flex-wrap items-center gap-2">
+            {prospect.website && (
+              <a href={prospect.website} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-xs bg-brand-50 text-brand-600 hover:bg-brand-100 px-2.5 py-1 rounded-lg font-medium transition-colors">
+                <Globe className="w-3.5 h-3.5" /> Site web
+              </a>
+            )}
+            {prospect.source_urls.map((url, i) => {
+              let label: string;
+              try { label = new URL(url).hostname.replace("www.", ""); } catch { label = `Source ${i + 1}`; }
+              return (
+                <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs bg-surface-100 text-surface-600 hover:bg-surface-200 px-2.5 py-1 rounded-lg font-medium transition-colors">
+                  <ExternalLink className="w-3 h-3" /> {label}
+                </a>
+              );
+            })}
+          </div>
         </div>
 
         {/* Score ring */}
@@ -149,6 +160,20 @@ function TimelineRow({ prospect, rank }: { prospect: Prospect; rank: number }) {
               <div>
                 <span className="font-medium text-surface-700">Site :</span>{" "}
                 <a href={prospect.website} target="_blank" rel="noopener noreferrer" className="text-brand-500 hover:underline">{prospect.website}</a>
+              </div>
+            )}
+            {prospect.source_urls.length > 0 && (
+              <div className="md:col-span-2 flex flex-wrap items-center gap-2 pt-1">
+                <span className="font-medium text-surface-700 text-sm">Sources :</span>
+                {prospect.source_urls.map((url, i) => {
+                  let label: string;
+                  try { label = new URL(url).hostname.replace("www.", ""); } catch { label = `Source ${i + 1}`; }
+                  return (
+                    <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-xs bg-surface-100 text-surface-600 hover:bg-surface-200 px-2 py-0.5 rounded-lg font-medium transition-colors">
+                      <ExternalLink className="w-3 h-3" /> {label}
+                    </a>
+                  );
+                })}
               </div>
             )}
           </div>
