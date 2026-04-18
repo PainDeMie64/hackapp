@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [tailwindcss(), sveltekit()],
 	build: {
 		rollupOptions: {
-			external: ['pdf-parse']
+			external: ['pdf-parse', 'leaflet']
 		}
 	}
 });
