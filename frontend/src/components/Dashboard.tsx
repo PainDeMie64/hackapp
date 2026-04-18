@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Search, FileBarChart, Clock, ArrowRight, Users, BarChart3, Zap, FileText } from "lucide-react";
+import { Search, FileBarChart, Clock, ArrowRight, Users, BarChart3, Zap, FileText, RefreshCw, ChevronRight } from "lucide-react";
+import clsx from "clsx";
 import { fetchDashboard } from "../api";
 import type { DashboardData } from "../api";
 
@@ -172,6 +173,76 @@ export function Dashboard({ onNavigate }: Props) {
             className="inline-flex items-center gap-2 text-sm font-semibold text-brand-500 hover:text-brand-600 transition-colors"
           >
             Voir l'historique <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* News Feed */}
+      <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-6 lg:p-8 hover:shadow-lg transition-shadow">
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-xl font-bold text-surface-900">Actualités Récentes</h2>
+          <button
+            onClick={() => fetchDashboard().then(setData).catch(() => {})}
+            className="flex items-center gap-2 text-sm text-surface-400 hover:text-surface-900 transition-colors px-3 py-1.5 rounded-lg hover:bg-surface-50"
+          >
+            <RefreshCw className="w-4 h-4" /> Actualiser
+          </button>
+        </div>
+
+        {!data || data.news.length === 0 ? (
+          <div className="py-12 text-center">
+            <p className="text-base text-surface-400">Aucune actualité pour le moment.</p>
+            <p className="text-sm text-surface-300 mt-1">Les actualités apparaîtront ici après une recherche de prospects.</p>
+          </div>
+        ) : (
+          <div className="space-y-1 divide-y divide-surface-100">
+            {data.news.map((item, i) => {
+              const categoryBorder: Record<string, string> = {
+                industrie: "border-l-blue-500",
+                client: "border-l-brand-500",
+                prospect: "border-l-green-500",
+              };
+              const categoryBadge: Record<string, { label: string; cls: string }> = {
+                industrie: { label: "Industrie", cls: "bg-surface-100 text-surface-700" },
+                client: { label: "Client", cls: "bg-brand-100 text-brand-700" },
+                prospect: { label: "Prospect", cls: "bg-green-100 text-green-700" },
+              };
+              const badge = categoryBadge[item.category] || categoryBadge.industrie;
+
+              return (
+                <div
+                  key={i}
+                  className={clsx(
+                    "group flex items-start gap-3 py-4 -mx-4 px-4 rounded-r-xl transition-all duration-300 border-l-[3px] hover:bg-surface-50 hover:translate-x-1 cursor-pointer",
+                    categoryBorder[item.category] || categoryBorder.industrie
+                  )}
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5">
+                      <span className={clsx("text-xs font-medium px-2 py-0.5 rounded-full", badge.cls)}>
+                        {badge.label}
+                      </span>
+                    </div>
+                    <p className="text-sm text-surface-900 font-medium line-clamp-2 group-hover:text-brand-600 transition-colors">
+                      {item.title}
+                    </p>
+                    <p className="text-xs text-surface-400 mt-1">
+                      {item.source} · {item.sector}
+                    </p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-surface-300 shrink-0 mt-2 transition-transform group-hover:translate-x-1 group-hover:text-brand-500" />
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div className="mt-5 pt-5 border-t border-surface-200">
+          <button
+            onClick={() => onNavigate("reports")}
+            className="w-full flex items-center justify-center gap-2 text-sm font-medium text-surface-500 hover:text-surface-900 py-2.5 rounded-xl hover:bg-surface-50 transition-colors"
+          >
+            Voir toutes les actualités <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       </div>

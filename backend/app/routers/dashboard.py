@@ -32,6 +32,18 @@ async def get_dashboard():
 
     reports_count = sum(1 for s in completed if s.report)
 
+    news = []
+    for p in all_prospects:
+        if p.news_summary:
+            news.append({
+                "title": p.news_summary,
+                "source": p.name,
+                "category": "prospect" if p.confidence == "high" else "industrie",
+                "company": p.name,
+                "sector": p.sector,
+            })
+    news = news[:8]
+
     return {
         "total_prospects": total_prospects,
         "total_searches": total_searches,
@@ -43,4 +55,5 @@ async def get_dashboard():
             {"name": p.name, "sector": p.sector, "location": p.location, "confidence": p.confidence, "score": CONFIDENCE_SCORE.get(p.confidence, 50)}
             for p in top_prospects
         ],
+        "news": news,
     }

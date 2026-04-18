@@ -43,6 +43,14 @@ export async function fetchReport(searchId: string): Promise<{ report_markdown: 
   return resp.json();
 }
 
+export interface NewsItem {
+  title: string;
+  source: string;
+  category: "industrie" | "client" | "prospect";
+  company: string;
+  sector: string;
+}
+
 export interface DashboardData {
   total_prospects: number;
   total_searches: number;
@@ -51,6 +59,7 @@ export interface DashboardData {
   max_score: number;
   band_counts: { high: number; medium: number; low: number };
   top_prospects: { name: string; sector: string; location: string; confidence: string; score: number }[];
+  news: NewsItem[];
 }
 
 export async function fetchDashboard(): Promise<DashboardData> {
