@@ -1,42 +1,72 @@
-# sv
+# HackApp
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A hackathon webapp starter built for speed. SvelteKit 5, Tailwind v4, Cloudflare D1, and a ready-to-use component library — just add your idea.
 
-## Creating a project
+## Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **SvelteKit 5** — runes, snippets, TypeScript strict mode
+- **Tailwind CSS v4** — OKLCH color tokens, class-based dark mode
+- **Drizzle ORM + Cloudflare D1** — type-safe SQL on the edge
+- **Cloudflare Pages** — global deployment in seconds
+- **UI Components** — Button, Input, Textarea, Select, Card, Modal, Badge, Spinner, Nav, ThemeToggle, Toaster
 
-```sh
-# create a new project
-npx sv create my-app
-```
+## Getting Started
 
-To recreate this project with the same configuration:
-
-```sh
-# recreate this project
-npx sv@0.12.4 create --template minimal --types ts --install npm hackapp
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
+```bash
+git clone git@github.com:PainDeMie64/hackapp.git
+cd hackapp
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
+Open [http://localhost:5173](http://localhost:5173).
 
-To create a production version of your app:
+## Scripts
 
-```sh
-npm run build
+| Command | What it does |
+|---------|-------------|
+| `npm run dev` | Start dev server |
+| `npm run build` | Production build |
+| `npm run check` | Type check |
+| `npm run deploy` | Build + deploy to Cloudflare Pages |
+| `npm run db:generate` | Generate Drizzle migrations |
+| `npm run db:migrate:local` | Apply migrations locally |
+| `npm run cf-typegen` | Regenerate Cloudflare env types |
+
+## Database
+
+Uses Cloudflare D1 via Drizzle ORM. Schema lives in `src/lib/server/db/schema.ts`.
+
+```bash
+# Generate a migration after editing the schema
+npm run db:generate
+
+# Apply locally
+npm run db:migrate:local
+
+# Apply to production
+npx wrangler d1 migrations apply hackapp-db --remote
 ```
 
-You can preview the production build with `npm run preview`.
+## Project Structure
 
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+```
+src/
+  lib/
+    components/ui/   UI component library
+    stores/          Theme + toast stores (Svelte 5 runes)
+    server/db/       Drizzle schema + db helper
+    utils/           cn() class merge helper
+  routes/
+    +layout.svelte   Root layout with nav + toaster
+    +page.svelte     Landing page / component showcase
+    api/health/      Health check endpoint
+```
+
+## Deploy
+
+```bash
+npm run deploy
+```
+
+Requires [Wrangler](https://developers.cloudflare.com/workers/wrangler/) auth — run `npx wrangler login` first.
