@@ -179,19 +179,13 @@ export async function scrapeUrl(url: string, opts: ScrapeOptions): Promise<NewSc
 
 	const urlHash = await sha256(normalized);
 	const epoch = Date.now();
-	const htmlKey = `scrapes/${opts.sourceId}/${urlHash}/${epoch}.html`;
 	const textKey = `scrapes/${opts.sourceId}/${urlHash}/${epoch}.txt`;
 
-	let storedHtmlKey: string | null = null;
 	let storedTextKey: string | null = null;
 
 	try {
-		await Promise.all([
-			opts.storage.put(htmlKey, text, { httpMetadata: { contentType: 'text/plain' } })
-				.then(() => { storedTextKey = textKey; }),
-			opts.storage.put(textKey, text, { httpMetadata: { contentType: 'text/plain' } })
-				.then(() => { storedHtmlKey = htmlKey; })
-		]);
+		await opts.storage.put(textKey, text, { httpMetadata: { contentType: 'text/plain; charset=utf-8' } });
+		storedTextKey = textKey;
 	} catch {
 		// R2 failure is non-fatal — metadata in D1 is still valuable
 	}
@@ -210,7 +204,7 @@ export async function scrapeUrl(url: string, opts: ScrapeOptions): Promise<NewSc
 		language: meta.language || null,
 		faviconUrl: meta.faviconUrl || null,
 		wordCount, linkCount: meta.linkCount, imageCount: meta.imageCount,
-		rawHtmlR2Key: storedHtmlKey, extractedTextR2Key: storedTextKey,
+		rawHtmlR2Key: null, extractedTextR2Key: storedTextKey,
 		contentHash, jsonLd: jsonLdStr,
 	} as NewScrapeResult;
 }
