@@ -34,13 +34,15 @@ class Semaphore {
 
 	async acquire(): Promise<void> {
 		if (this.active < this.max) { this.active++; return; }
-		return new Promise(resolve => this.queue.push(resolve));
+		return new Promise<void>(resolve => {
+			this.queue.push(() => { this.active++; resolve(); });
+		});
 	}
 
 	release(): void {
+		this.active--;
 		const next = this.queue.shift();
-		if (next) { next(); }
-		else { this.active--; }
+		if (next) next();
 	}
 }
 

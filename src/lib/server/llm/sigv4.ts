@@ -33,8 +33,15 @@ async function getSignatureKey(
 }
 
 function formatDate(date: Date): { dateStamp: string; amzDate: string } {
-	const iso = date.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-	return { dateStamp: iso.slice(0, 8), amzDate: iso.slice(0, 15) + 'Z' };
+	const y = date.getUTCFullYear();
+	const m = String(date.getUTCMonth() + 1).padStart(2, '0');
+	const d = String(date.getUTCDate()).padStart(2, '0');
+	const h = String(date.getUTCHours()).padStart(2, '0');
+	const mi = String(date.getUTCMinutes()).padStart(2, '0');
+	const s = String(date.getUTCSeconds()).padStart(2, '0');
+	const dateStamp = `${y}${m}${d}`;
+	const amzDate = `${dateStamp}T${h}${mi}${s}Z`;
+	return { dateStamp, amzDate };
 }
 
 export async function signRequest(input: SignatureV4Input): Promise<{
@@ -43,26 +50,32 @@ export async function signRequest(input: SignatureV4Input): Promise<{
 	const url = new URL(input.url);
 	const { dateStamp, amzDate } = formatDate(new Date());
 
-	const headers: Record<string, string> = {
-		...input.headers,
-		host: url.host,
-		'x-amz-date': amzDate,
-	};
+	// Normalize all headers to lowercase keys upfront
+	const normalized: Record<string, string> = {};
+	for (const [k, v] of Object.entries(input.headers)) {
+		normalized[k.toLowerCase()] = v.trim();
+	}
+	normalized['host'] = url.host;
+	normalized['x-amz-date'] = amzDate;
 	if (input.sessionToken) {
-		headers['x-amz-security-token'] = input.sessionToken;
+		normalized['x-amz-security-token'] = input.sessionToken;
 	}
 
-	const signedHeaderKeys = Object.keys(headers).sort().map(k => k.toLowerCase());
+	const signedHeaderKeys = Object.keys(normalized).sort();
 	const signedHeaders = signedHeaderKeys.join(';');
 	const canonicalHeaders = signedHeaderKeys
-		.map(k => `${k}:${headers[Object.keys(headers).find(h => h.toLowerCase() === k)!].trim()}`)
+		.map(k => `${k}:${normalized[k]}`)
 		.join('\n') + '\n';
+
+	// Sort query parameters per AWS SigV4 spec
+	const sortedParams = [...url.searchParams.entries()].sort(([a], [b]) => a.localeCompare(b));
+	const canonicalQueryString = sortedParams.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
 
 	const payloadHash = await sha256Hex(input.body);
 	const canonicalRequest = [
 		input.method,
 		url.pathname,
-		url.searchParams.toString(),
+		canonicalQueryString,
 		canonicalHeaders,
 		signedHeaders,
 		payloadHash,
@@ -80,7 +93,7 @@ export async function signRequest(input: SignatureV4Input): Promise<{
 	const signatureBuffer = await hmacSha256(signingKey, stringToSign);
 	const signature = [...new Uint8Array(signatureBuffer)].map(b => b.toString(16).padStart(2, '0')).join('');
 
-	headers['authorization'] = `AWS4-HMAC-SHA256 Credential=${input.accessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
+	normalized['authorization'] = `AWS4-HMAC-SHA256 Credential=${input.accessKeyId}/${scope}, SignedHeaders=${signedHeaders}, Signature=${signature}`;
 
-	return { url: input.url, headers, body: input.body };
+	return { url: input.url, headers: normalized, body: input.body };
 }
