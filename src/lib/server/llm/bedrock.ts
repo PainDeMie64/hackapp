@@ -1,4 +1,4 @@
-import { signRequest } from './sigv4.js';
+import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 
 export interface BedrockConfig {
 	accessKeyId: string;
@@ -15,10 +15,19 @@ export class BedrockError extends Error {
 }
 
 export class BedrockClient {
-	private config: BedrockConfig;
+	private client: BedrockRuntimeClient;
+	private model: string;
 
 	constructor(config: BedrockConfig) {
-		this.config = config;
+		this.model = config.model;
+		this.client = new BedrockRuntimeClient({
+			region: config.region,
+			credentials: {
+				accessKeyId: config.accessKeyId,
+				secretAccessKey: config.secretAccessKey,
+				sessionToken: config.sessionToken,
+			},
+		});
 	}
 
 	async converse(
@@ -26,17 +35,6 @@ export class BedrockClient {
 		opts: { maxTokens?: number; temperature?: number; system?: string } = {}
 	): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
 		const { maxTokens = 4096, temperature = 0.1, system } = opts;
-		const url = `https://bedrock-runtime.${this.config.region}.amazonaws.com/model/${encodeURIComponent(this.config.model)}/converse`;
-
-		const body: Record<string, unknown> = {
-			messages: [{ role: 'user', content: [{ text: userMessage }] }],
-			inferenceConfig: { maxTokens, temperature },
-		};
-		if (system) {
-			body.system = [{ text: system }];
-		}
-
-		const bodyStr = JSON.stringify(body);
 
 		let lastError: Error | null = null;
 		for (let attempt = 0; attempt < 3; attempt++) {
@@ -44,48 +42,29 @@ export class BedrockClient {
 				await new Promise(r => setTimeout(r, 1000 * Math.pow(3, attempt - 1)));
 			}
 
-			const signed = await signRequest({
-				method: 'POST',
-				url,
-				headers: {
-					'content-type': 'application/json',
-					'accept': 'application/json',
-				},
-				body: bodyStr,
-				region: this.config.region,
-				service: 'bedrock-runtime',
-				accessKeyId: this.config.accessKeyId,
-				secretAccessKey: this.config.secretAccessKey,
-				sessionToken: this.config.sessionToken,
-			});
+			try {
+				const command = new ConverseCommand({
+					modelId: this.model,
+					messages: [{ role: 'user', content: [{ text: userMessage }] }],
+					inferenceConfig: { maxTokens, temperature },
+					...(system ? { system: [{ text: system }] } : {}),
+				});
 
-			const response = await fetch(signed.url, {
-				method: 'POST',
-				headers: signed.headers,
-				body: signed.body,
-			});
+				const response = await this.client.send(command);
 
-			if (response.status === 429 || response.status >= 500) {
-				lastError = new BedrockError(`Bedrock ${response.status}`, response.status);
-				continue;
+				const text = response.output?.message?.content?.[0]?.text ?? '';
+				return {
+					text: cleanJsonResponse(text),
+					inputTokens: response.usage?.inputTokens ?? 0,
+					outputTokens: response.usage?.outputTokens ?? 0,
+				};
+			} catch (e: any) {
+				if (e.name === 'ThrottlingException' || e.$metadata?.httpStatusCode >= 500) {
+					lastError = e;
+					continue;
+				}
+				throw new BedrockError(e.message ?? String(e), e.$metadata?.httpStatusCode ?? 500);
 			}
-
-			if (!response.ok) {
-				const errText = await response.text();
-				throw new BedrockError(`Bedrock ${response.status}: ${errText.substring(0, 200)}`, response.status);
-			}
-
-			const data = await response.json() as {
-				output: { message: { content: Array<{ text: string }> } };
-				usage: { inputTokens: number; outputTokens: number };
-			};
-
-			const text = data.output.message.content[0]?.text ?? '';
-			return {
-				text: cleanJsonResponse(text),
-				inputTokens: data.usage.inputTokens,
-				outputTokens: data.usage.outputTokens,
-			};
 		}
 
 		throw lastError ?? new BedrockError('Bedrock call failed after 3 retries', 500);

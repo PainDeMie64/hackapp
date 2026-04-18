@@ -26,7 +26,7 @@ export const POST: RequestHandler = async ({ url, platform }) => {
 	});
 
 	const sync = url.searchParams.get('sync') === 'true';
-	const config = { db, storage, bedrock };
+	const config = { db, storage, bedrock, serperApiKey: env.SERPER_API_KEY || undefined };
 
 	if (sync) {
 		const result = await runFullPipeline(config);
