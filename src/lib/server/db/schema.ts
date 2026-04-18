@@ -5,6 +5,7 @@ export const sources = sqliteTable('sources', {
 	url: text('url').notNull().unique(),
 	name: text('name'),
 	type: text('type'),
+	isPriority: integer('is_priority', { mode: 'boolean' }).default(false),
 	isActive: integer('is_active', { mode: 'boolean' }).default(true),
 	lastCrawledAt: integer('last_crawled_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),

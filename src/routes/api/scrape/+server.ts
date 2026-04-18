@@ -2,7 +2,7 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types.js';
 import { getDb } from '$lib/server/db/index.js';
 import { sources, scrapeResults } from '$lib/server/db/schema.js';
-import { eq, inArray, desc } from 'drizzle-orm';
+import { eq, and, inArray, desc } from 'drizzle-orm';
 import { scrapeUrl } from '$lib/server/scraper/scrape-url.js';
 import { getStorage } from '$lib/server/storage/index.js';
 
@@ -39,7 +39,7 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	const db = getDb(platform.env.DB);
 	const storage = platform.env.STORAGE;
 
-	let body: { source_ids?: string[] } = {};
+	let body: { source_ids?: string[]; all?: boolean } = {};
 	try {
 		const text = await request.text();
 		if (text.trim()) body = JSON.parse(text);
@@ -55,8 +55,12 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 		if (missing.length > 0) {
 			return json({ error: 'Sources not found', missing_ids: missing }, { status: 404 });
 		}
-	} else {
+	} else if (body.all) {
 		allSources = await db.select().from(sources).where(eq(sources.isActive, true));
+	} else {
+		allSources = await db.select().from(sources).where(
+			and(eq(sources.isActive, true), eq(sources.isPriority, true))
+		);
 	}
 
 	if (allSources.length === 0) {

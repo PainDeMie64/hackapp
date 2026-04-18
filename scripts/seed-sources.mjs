@@ -97,6 +97,16 @@ function mapType(csvType) {
 	return TYPE_MAP[csvType] || 'other';
 }
 
+const PRIORITY_URLS = new Set([
+	'https://www.pappers.fr',
+	'https://www.societe.com',
+	'https://www.bodacc.fr',
+	'https://www.insee.fr',
+	'https://www.amf-france.org',
+	'https://www.banque-france.fr/fr/a-votre-service/entreprise/cotation-des-entreprises',
+	'https://dares.travail-emploi.gouv.fr',
+]);
+
 function esc(s) {
 	return s.replace(/'/g, "''");
 }
@@ -133,10 +143,11 @@ for (const row of data) {
 	seen.add(url);
 
 	const mappedType = mapType(type);
+	const priority = PRIORITY_URLS.has(url) ? 1 : 0;
 	statements.push(
-		`INSERT INTO sources (id, url, name, type, is_active, created_at, updated_at) ` +
+		`INSERT INTO sources (id, url, name, type, is_priority, is_active, created_at, updated_at) ` +
 		`VALUES (lower(hex(randomblob(4)) || '-' || hex(randomblob(2)) || '-4' || substr(hex(randomblob(2)),2) || '-' || substr('89ab',abs(random()) % 4 + 1, 1) || substr(hex(randomblob(2)),2) || '-' || hex(randomblob(6))), ` +
-		`'${esc(url)}', '${esc(name)}', '${esc(mappedType)}', 1, unixepoch(), unixepoch());`
+		`'${esc(url)}', '${esc(name)}', '${esc(mappedType)}', ${priority}, 1, unixepoch(), unixepoch());`
 	);
 }
 
