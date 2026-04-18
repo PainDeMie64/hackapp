@@ -9,6 +9,10 @@ const TRACKING_PARAMS = new Set([
 export function normalizeUrl(raw: string): string {
 	const url = new URL(raw);
 
+	if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+		throw new Error(`Unsupported URL scheme: ${url.protocol}`);
+	}
+
 	url.protocol = 'https:';
 	url.hostname = url.hostname.toLowerCase().replace(/^www\./, '');
 	if (url.port === '443' || url.port === '80') url.port = '';

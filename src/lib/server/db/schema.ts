@@ -76,6 +76,7 @@ export const scrapeResults = sqliteTable('scrape_results', {
 
 	// ── URL info ──────────────────────────────────────────────────────────
 	url: text('url').notNull(),
+	finalUrl: text('final_url'),
 	normalizedUrl: text('normalized_url').notNull(),
 	baseDomain: text('base_domain').notNull(),
 	path: text('path').notNull(),
@@ -107,6 +108,7 @@ export const scrapeResults = sqliteTable('scrape_results', {
 	// ── Content pointers (full bodies live in R2) ─────────────────────────
 	rawHtmlR2Key: text('raw_html_r2_key'),
 	extractedTextR2Key: text('extracted_text_r2_key'),
+	contentHash: text('content_hash'),
 
 	// ── Structured data ───────────────────────────────────────────────────
 	// Raw JSON-LD from the page, stored as a JSON string.
@@ -116,7 +118,11 @@ export const scrapeResults = sqliteTable('scrape_results', {
 	// ── Crawl info ────────────────────────────────────────────────────────
 	scrapedAt: integer('scraped_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 	scrapeDurationMs: integer('scrape_duration_ms'),
-	sourceId: text('source_id').notNull().references(() => sources.id)
+	sourceId: text('source_id').notNull().references(() => sources.id),
+
+	// ── Pipeline status (for downstream LLM consumer) ─────────────────────
+	llmStatus: text('llm_status').default('pending'),
+	processedAt: integer('processed_at', { mode: 'timestamp' })
 }, (table) => ([
 	// The LLM pipeline queries by source to process unprocessed pages
 	index('scrape_results_source_id').on(table.sourceId),
@@ -131,7 +137,10 @@ export const scrapeResults = sqliteTable('scrape_results', {
 	index('scrape_results_normalized_url').on(table.normalizedUrl),
 
 	// HTTP-level filtering (e.g., only process 200s)
-	index('scrape_results_status_code').on(table.statusCode)
+	index('scrape_results_status_code').on(table.statusCode),
+
+	// Composite index for the LLM pipeline: "pending 200s for a source, in order"
+	index('scrape_results_pipeline').on(table.sourceId, table.llmStatus, table.scrapedAt)
 ]));
 
 // ---------------------------------------------------------------------------
