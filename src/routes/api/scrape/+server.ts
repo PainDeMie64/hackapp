@@ -10,41 +10,41 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	const db = getDb(platform!.env.DB);
 	const storage = getStorage(platform);
 
-	const body = (await request.json()) as { urls?: string[] };
-	const urls = body.urls;
+	const body = (await request.json()) as { source_ids?: string[] };
 
-	if (!Array.isArray(urls) || urls.length === 0) {
-		return json({ error: 'urls must be a non-empty array' }, { status: 400 });
+	const allSources = body.source_ids
+		? await Promise.all(body.source_ids.map(id =>
+			db.select().from(sources).where(eq(sources.id, id)).then(r => r[0])
+		)).then(r => r.filter(Boolean))
+		: await db.select().from(sources).where(eq(sources.isActive, true));
+
+	if (allSources.length === 0) {
+		return json({ error: 'No active sources found' }, { status: 404 });
 	}
 
-	const results: { url: string; status: string; error?: string }[] = [];
+	const results: { url: string; sourceId: string; status: string; error?: string }[] = [];
 
-	for (const url of urls) {
+	for (const source of allSources) {
 		try {
-			const parsed = new URL(url);
-			const domain = parsed.hostname.replace(/^www\./, '').toLowerCase();
-
-			let [source] = await db.select().from(sources).where(eq(sources.url, url)).limit(1);
-			if (!source) {
-				[source] = await db.insert(sources).values({
-					url,
-					name: domain,
-					type: 'other',
-					isActive: true
-				}).returning();
-			}
-
-			const scrapeData = await scrapeUrl(url, { sourceId: source.id, storage });
+			const scrapeData = await scrapeUrl(source.url, { sourceId: source.id, storage });
 			await db.insert(scrapeResults).values(scrapeData).onConflictDoNothing();
 
-			results.push({ url, status: 'ok' });
+			await db.update(sources)
+				.set({ lastCrawledAt: new Date(), isActive: true })
+				.where(eq(sources.id, source.id));
+
+			results.push({ url: source.url, sourceId: source.id, status: 'ok' });
 		} catch (e: any) {
-			results.push({ url, status: 'error', error: e.message });
+			await db.update(sources)
+				.set({ isActive: false })
+				.where(eq(sources.id, source.id));
+
+			results.push({ url: source.url, sourceId: source.id, status: 'error', error: e.message });
 		}
 	}
 
 	const ok = results.filter(r => r.status === 'ok').length;
 	const failed = results.filter(r => r.status === 'error').length;
 
-	return json({ data: { scraped: ok, failed, total: urls.length, results } });
+	return json({ data: { scraped: ok, failed, total: allSources.length, results } });
 };

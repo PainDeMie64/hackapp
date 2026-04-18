@@ -39,9 +39,9 @@ Steps 1–3 run periodically. Not triggered by the user.
 
 | Step | Owner | Description |
 |------|-------|-------------|
-| 1 | Other team | Compile a CSV of ~1000 website URLs (newsletters, government registries, company directories). |
-| 2 | Other team | Filter the CSV: remove offline sites, duplicates, invalid URLs. Output: a clean JSON array of company data. |
-| 3 | **Us** | Receive the JSON array via `POST /api/companies/ingest`. Upsert rows in the `companies` table. Populate only objective, factual fields. No subjective analysis. No news. |
+| 1 | Other team | Populate the `sources` table with ~1000 website URLs (newsletters, government registries, company directories). |
+| 2 | **Us** | `POST /api/scrape` reads all active sources from the `sources` table, scrapes each URL, and stores raw content in R2 + metadata in the `scrape_results` table. Optionally pass `{ source_ids: [...] }` to scrape specific sources. |
+| 3 | **Us** | From the scraped data, upsert rows in the `companies` table. Populate only objective, factual fields. No subjective analysis. No news. |
 
 ### Phase B — On-demand news enrichment (user-triggered)
 
