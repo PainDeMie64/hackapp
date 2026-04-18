@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html lang="fr"><head>
 <script src="slides_files/libs/clipboard/clipboard.min.js"></script>
 <script src="slides_files/libs/quarto-html/tabby.min.js"></script>
 <script src="slides_files/libs/quarto-html/popper.min.js"></script>
 <script src="slides_files/libs/quarto-html/tippy.umd.min.js"></script>
 <link href="slides_files/libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="slides_files/libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="slides_files/libs/quarto-html/quarto-syntax-highlighting-0815c480559380816a4d1ea211a47e91.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.29">
+<link href="slides_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.27">
 
-  <meta name="author" content="Équipe HackApp — AI For Business Hackathon">
-  <meta name="dcterms.date" content="2026-01-01">
+  <meta name="author" content="Équipe Crabe (Team 1) — AI For Business Hackathon">
   <title>ALTEN Prospecting Agent</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -30,7 +29,7 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-2ad74e208be64291fbb29a9f6b609a59.css">
+  <link rel="stylesheet" href="slides_files/libs/revealjs/dist/theme/quarto-1815d4443e91a86aad585aafddc7ab69.css">
   <link href="slides_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="slides_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -122,6 +121,7 @@
       margin-right: 0; 
     }
   </style>
+  <meta name="color-scheme" content="light"><style>html,body,.reveal-viewport,.reveal{color-scheme:light !important;background-color:#fff !important}</style>
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -134,12 +134,12 @@
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
 <div class="quarto-title-author-name">
-Équipe HackApp — AI For Business Hackathon 
+Équipe Crabe (Team 1) — AI For Business Hackathon 
 </div>
 </div>
 </div>
 
-  <p class="date">2026-01-01</p>
+  <p class="date">18 avril 2026</p>
 </section>
 <section class="slide level2 center">
 <h2>Le Problème</h2>
@@ -147,20 +147,22 @@
 <div class="column" style="width:50%;">
 <h3>Prospection traditionnelle</h3>
 <ul>
-<li>Recherche <strong>manuelle</strong> sur des dizaines de sources</li>
-<li><strong>Semaines</strong> pour qualifier un vivier</li>
-<li>Critères <strong>subjectifs</strong>, non reproductibles</li>
+<li>Recherche <strong>manuelle</strong> sur dizaines de sources</li>
+<li><strong>Semaines</strong> pour qualifier des prospects</li>
+<li>Critères <strong>subjectifs</strong></li>
+<li>Données dispersées</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <h3>Ce qu’ALTEN perd</h3>
 <ul>
-<li><strong>35 000+</strong> postes ingénierie ouverts en France</li>
+<li><strong>35 000+</strong> postes ingénierie ouverts</li>
 <li>Fenêtres d’opportunité <strong>ratées</strong></li>
-<li>Pas de vision <strong>consolidée</strong> du marché</li>
+<li>Pas de vision <strong>consolidée</strong></li>
+<li>Signaux <strong>noyés</strong> dans le bruit</li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>Bonjour à tous. ALTEN, leader européen du conseil en ingénierie avec 33 000 collaborateurs en France, fait face à un défi quotidien : identifier les bonnes entreprises à prospecter. Un commercial passe des semaines à éplucher des rapports, des offres d’emploi, des articles de presse. Plus de 35 000 postes ingénierie ouverts en France — autant de signaux que personne n’a le temps de consolider. On perd des fenêtres critiques.</p>
+<p>Bonjour à tous. ALTEN, leader européen du conseil en ingénierie avec 33 000 collaborateurs en France, fait face à un défi quotidien : identifier les bonnes entreprises à prospecter. Un commercial passe des semaines à éplucher des rapports, des offres d’emploi, des articles de presse. Plus de 35 000 postes ingénierie ouverts — autant de signaux que personne n’a le temps de consolider.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -174,11 +176,13 @@
       }</style></aside>
 </section>
 <section class="slide level2 center">
-<h2>Pré-calculer pour Décider Vite</h2>
+<h2>Notre Approche</h2>
 <div class="columns">
 <div class="column" style="width:55%;">
-<p>L’IA analyse les documents <strong>périodiquement</strong> et alimente une base pré-calculée</p>
-<p>Le commercial interroge une base <strong>déjà prête</strong> — pas d’attente</p>
+<h3>Traitement en arrière-plan</h3>
+<p>L’IA analyse <strong>périodiquement</strong> les documents, extrait et score les données dans une <strong>base pré-calculée</strong></p>
+<h3>Consultation instantanée</h3>
+<p>Le commercial interroge une base <strong>déjà prête</strong> — filtres, tri, export en <strong>secondes</strong></p>
 </div><div class="column" style="width:45%;">
 <table class="caption-top">
 <thead>
@@ -189,16 +193,16 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Collecte de sources</td>
+<td>Collecte sources</td>
 <td>Hebdomadaire</td>
 </tr>
 <tr class="even">
 <td>Extraction IA</td>
-<td>À chaque mise à jour</td>
+<td>Auto</td>
 </tr>
 <tr class="odd">
 <td>Scoring</td>
-<td>Automatique</td>
+<td>Auto</td>
 </tr>
 <tr class="even">
 <td><strong>Consultation</strong></td>
@@ -208,7 +212,7 @@
 </table>
 </div></div>
 <aside class="notes">
-<p>Notre approche clé : séparer le traitement lourd de la consultation. L’IA tourne en arrière-plan, périodiquement. Quand le commercial a besoin d’une liste de prospects, il interroge une base déjà prête. Filtres par secteur, tri par score, export Sheets — tout est instantané.</p>
+<p>Notre approche clé : séparer le traitement lourd de la consultation. L’IA tourne en arrière-plan — elle extrait, structure et score les données. Le commercial interroge une base déjà prête. Pas d’attente, pas de traitement à la volée.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -222,31 +226,32 @@
       }</style></aside>
 </section>
 <section class="slide level2 center">
-<h2>50 Critères Métier en 8 Familles</h2>
+<h2>50+ Critères Métier</h2>
 <div class="columns">
-<div class="column" style="width:45%;">
+<div class="column" style="width:50%;">
+<h3>8 familles de signaux</h3>
 <ol type="1">
+<li><strong>Recrutement</strong> — volume, durée, profils</li>
 <li><strong>Firmographique</strong> — secteur, taille</li>
-<li><strong>Recrutement</strong> — volume, compétences rares</li>
 <li><strong>Financier</strong> — croissance, R&amp;D</li>
-<li><strong>Projet</strong> — usines, migrations</li>
-<li><strong>Organisationnel</strong> — M&amp;A, direction</li>
-<li><strong>Technologique</strong> — legacy, cloud</li>
-<li><strong>Réglementaire</strong> — NIS2, certifications</li>
+<li><strong>Projet / Expansion</strong> — usines, migrations</li>
+<li><strong>Intention</strong> — M&amp;A, direction, consulting</li>
+<li><strong>Réglementaire</strong> — AI Act, NIS2</li>
+<li><strong>Concurrentiel</strong> — legacy, cloud, techno</li>
 <li><strong>Actualités</strong> — contrats, crises</li>
 </ol>
-</div><div class="column" style="width:55%;">
+</div><div class="column" style="width:50%;">
 <h3>Exemples concrets</h3>
 <ul>
-<li><strong>20+ offres</strong> ingénierie ouvertes &gt; 60 jours</li>
-<li>Croissance CA <strong>&gt; 10%</strong>, effectifs stables</li>
+<li><strong>20+ offres</strong> ingénierie ouvertes &gt; 60j</li>
+<li>Croissance CA <strong>&gt; 10%</strong> sans hausse effectifs</li>
 <li>Subvention <strong>France 2030</strong> obtenue</li>
 <li>Échéance <strong>NIS2</strong> imminente</li>
-<li>Compétences rares : FPGA, AUTOSAR</li>
+<li>Migration <strong>cloud</strong> ou <strong>ERP</strong> en cours</li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>Le cœur de l’outil : 50 critères métier consolidés à partir de 20 sources de recherche. On détecte des situations business : une croissance sans hausse d’effectifs signale un écart de capacité. 20 offres ouvertes depuis 60 jours, c’est un échec de recrutement — une porte ouverte pour le consulting. Chaque critère a sa logique métier.</p>
+<p>Le cœur de l’outil : un référentiel de plus de 50 critères métier répartis en 8 familles. On détecte des situations business : une croissance de CA sans hausse d’effectifs signale un écart de capacité. 20 offres ingénierie ouvertes depuis 60 jours, c’est un échec de recrutement — une porte ouverte pour le consulting.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -260,19 +265,22 @@
       }</style></aside>
 </section>
 <section class="slide level2 center">
-<h2>Scoring Hybride et Auditable</h2>
+<h2>Scoring Hybride</h2>
 <div class="columns">
 <div class="column" style="width:45%;">
-<h3>L’IA extrait les <strong>signaux</strong></h3>
+<h3>L’IA extrait les signaux</h3>
 <blockquote>
 <p><em>“500+ postes ouverts depuis 60 jours”</em></p>
 </blockquote>
 <blockquote>
-<p><em>“CA +14%, effectifs stables”</em></p>
+<p><em>“Croissance CA +14%, effectifs stables”</em></p>
+</blockquote>
+<blockquote>
+<p><em>“Programme EPR2, recrutement sûreté”</em></p>
 </blockquote>
 <p>Chaque signal est <strong>factuel</strong> et traçable</p>
 </div><div class="column" style="width:55%;">
-<h3>L’algorithme calcule le <strong>score</strong></h3>
+<h3>L’algorithme calcule le score</h3>
 <table class="caption-top">
 <thead>
 <tr class="header">
@@ -298,10 +306,14 @@
 <td><strong>15%</strong></td>
 </tr>
 <tr class="odd">
-<td>Intention / Réglementaire</td>
-<td><strong>20%</strong></td>
+<td>Intention</td>
+<td><strong>10%</strong></td>
 </tr>
 <tr class="even">
+<td>Réglementaire</td>
+<td><strong>10%</strong></td>
+</tr>
+<tr class="odd">
 <td>Concurrentiel</td>
 <td><strong>5%</strong></td>
 </tr>
@@ -309,7 +321,7 @@
 </table>
 </div></div>
 <aside class="notes">
-<p>On ne demande pas à l’IA de donner une note — ce serait une boîte noire. Elle extrait des signaux factuels. Ensuite, un algorithme déterministe applique les pondérations. Le commercial peut voir pourquoi une entreprise est scorée à 75 — c’est traçable jusqu’au document source. Pas magique, auditable.</p>
+<p>On ne demande pas à l’IA de donner une note — ce serait une boîte noire. On lui demande d’extraire des signaux factuels. Ensuite, un algorithme déterministe applique les pondérations. Le commercial peut voir pourquoi une entreprise est scorée — c’est traçable jusqu’au document source.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -325,51 +337,46 @@
 <section class="slide level2 center">
 <h2>Disqualification Automatique</h2>
 <div class="columns">
-<div class="column" style="width:50%;">
-<h3>Signaux négatifs détectés</h3>
+<div class="column" style="width:55%;">
+<h3>Signaux négatifs – Score 0</h3>
 <ul>
-<li>Faillite ou redressement judiciaire</li>
+<li>Faillite ou liquidation judiciaire</li>
 <li>Politique d’<strong>internalisation</strong></li>
 <li>Trop petit (&lt; 50 salariés)</li>
-<li>Gel des embauches sans projets</li>
+<li>Gel embauches <strong>sans</strong> projets actifs</li>
 <li>Sanctions / risque géopolitique</li>
 </ul>
-</div><div class="column" style="width:50%;">
+</div><div class="column" style="width:45%;">
 <h3>Validé sur la démo</h3>
 <table class="caption-top">
 <thead>
 <tr class="header">
 <th>Entreprise</th>
 <th>Signal</th>
-<th>Score</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Atos</td>
-<td>Redressement</td>
-<td><strong>0</strong></td>
+<td>Orpea</td>
+<td><span class="signal-negative">Restructuration dette</span></td>
 </tr>
 <tr class="even">
-<td>Orpea</td>
-<td>Restructuration</td>
-<td><strong>0</strong></td>
+<td>Casino</td>
+<td><span class="signal-negative">Faillite</span></td>
 </tr>
 <tr class="odd">
 <td>Criteo</td>
-<td>Internalisation</td>
-<td><strong>0</strong></td>
+<td><span class="signal-negative">Internalisation</span></td>
 </tr>
 <tr class="even">
 <td>MicroTech</td>
-<td>30 salariés</td>
-<td><strong>0</strong></td>
+<td><span class="signal-negative">Trop petit</span></td>
 </tr>
 </tbody>
 </table>
 </div></div>
 <aside class="notes">
-<p>Le système élimine aussi les mauvais prospects. Une entreprise en faillite, avec une politique d’internalisation, ou trop petite est automatiquement disqualifiée — score zéro. Sur notre démo, toutes les disqualifications ont été correctement détectées.</p>
+<p>Le système élimine aussi les mauvais prospects. Faillite, internalisation, trop petite taille — score automatiquement à zéro. Ça évite au commercial de perdre du temps sur des cibles impossibles.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -389,21 +396,23 @@
 <h3>Sources multiples</h3>
 <ul>
 <li>Pages web, rapports annuels</li>
-<li>Articles de presse, communiqués</li>
+<li>Articles de presse</li>
 <li>Avis de marché (BOAMP, TED)</li>
+<li>Fiches entreprise (Pappers)</li>
 <li>Documents multilingues (FR/EN/DE)</li>
 </ul>
 </div><div class="column" style="width:50%;">
 <h3>Adaptable</h3>
 <ul>
 <li><strong>Pondérations ajustables</strong> par secteur</li>
-<li><strong>Critères extensibles</strong> : +1 signal = +1 colonne</li>
-<li><strong>Scoring reproductible</strong> : mêmes données → même score</li>
-<li><strong>Export flexible</strong> : dashboard, Sheets, API</li>
+<li><strong>Critères extensibles</strong> facilement</li>
+<li><strong>Multi-format</strong> : tout document texte</li>
+<li><strong>Export</strong> : dashboard, CSV, Sheets</li>
+<li><strong>Reproductible</strong> : mêmes données, même score</li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>Le design est flexible. Les pondérations sont ajustables — prioriser la réglementation plutôt que le recrutement pour un secteur, c’est un paramètre. Ajouter un critère, c’est ajouter une colonne. Le pipeline accepte tout document convertible en texte. Et le scoring est reproductible : mêmes données, même résultat.</p>
+<p>Le design est flexible. Les pondérations sont ajustables par secteur. Ajouter un critère, c’est ajouter une colonne. Le pipeline accepte tout document convertible en texte. Et le scoring est reproductible.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -417,14 +426,14 @@
       }</style></aside>
 </section>
 <section class="slide level2 center">
-<h2>Résultats</h2>
+<h2>Résultats de la Démo</h2>
 <div class="columns">
 <div class="column" style="width:40%;">
 <h3>En chiffres</h3>
 <ul>
-<li><strong>30 documents</strong> analysés</li>
-<li><strong>143 entreprises</strong> identifiées</li>
-<li><strong>50 critères</strong> évalués</li>
+<li><strong>3 000+ documents</strong> analysés</li>
+<li><strong>600+ entreprises</strong> identifiées</li>
+<li><strong>50+ critères</strong> évalués</li>
 <li>Consultation <strong>&lt; 1 seconde</strong></li>
 </ul>
 </div><div class="column" style="width:60%;">
@@ -439,26 +448,31 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Warm</td>
-<td>60-79</td>
-<td>AXA (75), SocGen (71)</td>
+<td><span class="pill pill-hot">Hot</span></td>
+<td>80-100</td>
+<td>Technicatome, EDF Nucléaire</td>
 </tr>
 <tr class="even">
-<td>Qualifié</td>
+<td><span class="pill pill-warm">Warm</span></td>
+<td>60-79</td>
+<td>Air Liquide, Atos Eviden, Technip</td>
+</tr>
+<tr class="odd">
+<td><span class="pill pill-qualified">Qualified</span></td>
 <td>40-59</td>
 <td>Medtronic, Legrand</td>
 </tr>
-<tr class="odd">
-<td>Froid</td>
-<td>&lt; 40</td>
+<tr class="even">
+<td><span class="pill pill-cold">Cold</span></td>
+<td>0-39</td>
 <td>Veille ou disqualifié</td>
 </tr>
 </tbody>
 </table>
-<p>Disqualifiés : Atos, Orpea, Casino, Criteo → <strong>0</strong></p>
+<p><strong>Top</strong> : Air Liquide (72), Atos Eviden (72), Technip (70)</p>
 </div></div>
 <aside class="notes">
-<p>30 documents analysés, 143 entreprises, chacune évaluée sur 50 critères. La consultation est instantanée. AXA à 75 grâce à sa migration cloud, bioMérieux à 68 avec la pression IVDR. Disqualifications correctes. La base est prête, le commercial consulte.</p>
+<p>Sur notre démo : plus de 3 000 documents analysés, 600+ entreprises réelles extraites à travers 30+ secteurs, chacune évaluée sur 50+ critères. La consultation est instantanée. Air Liquide et Atos Eviden en tête avec un score de 72 grâce à leurs projets d’expansion et besoins en cybersécurité.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -486,33 +500,38 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Qualifier un prospect</td>
+<td>Qualifier</td>
 <td>2-4h</td>
 <td><strong>instantané</strong></td>
 </tr>
 <tr class="even">
-<td>Couverture marché</td>
+<td>Analyser</td>
+<td>30 min</td>
+<td><strong>auto</strong></td>
+</tr>
+<tr class="odd">
+<td>Couverture</td>
 <td>~50</td>
 <td><strong>illimitée</strong></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Mise à jour</td>
-<td>Trimestrielle</td>
+<td>Trim.</td>
 <td><strong>hebdo</strong></td>
 </tr>
 </tbody>
 </table>
 </div><div class="column" style="width:50%;">
-<h3>Impact</h3>
+<h3>Impact commercial</h3>
 <ul>
-<li><strong>+30% de temps</strong> pour la relation client</li>
+<li><strong>+30% temps</strong> libéré pour le client</li>
 <li>Détection <strong>précoce</strong> d’opportunités</li>
 <li>Couverture <strong>exhaustive</strong> du marché</li>
-<li>Décisions <strong>traçables</strong> et objectives</li>
+<li>Décisions <strong>objectives</strong> et traçables</li>
 </ul>
 </div></div>
 <aside class="notes">
-<p>Le commercial ouvre le dashboard, la liste est là, triée par pertinence. La mise à jour est hebdomadaire et automatique. Le système détecte des signaux qu’un humain raterait. Couverture exhaustive, décisions traçables.</p>
+<p>L’impact est concret. Avant : des heures pour qualifier un prospect. Maintenant, la liste est déjà là, triée par pertinence. Mise à jour hebdomadaire et automatique. Le système détecte des signaux qu’un humain raterait.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -529,22 +548,26 @@
 <h2>Merci !</h2>
 <p><br></p>
 <h3>Agent de Prospection ALTEN</h3>
-<p><strong>50 critères</strong> · <strong>Scoring auditable</strong> · <strong>Consultation instantanée</strong></p>
+<p><strong>50+ critères</strong> · <strong>Scoring auditable</strong> · <strong>Consultation instantanée</strong></p>
+<p><br></p>
 <div class="columns">
 <div class="column" style="width:33%;">
-<p><strong>143 entreprises</strong></p>
-<p>identifiées et scorées</p>
+<div class="stat-card">
+<p><span class="stat-number">600+</span> <span class="stat-label">entreprises scorées</span></p>
+</div>
 </div><div class="column" style="width:33%;">
-<p><strong>&lt; 1 seconde</strong></p>
-<p>pour consulter</p>
+<div class="stat-card">
+<p><span class="stat-number">&lt; 1s</span> <span class="stat-label">pour consulter</span></p>
+</div>
 </div><div class="column" style="width:33%;">
-<p><strong>50 critères</strong></p>
-<p>extensibles</p>
+<div class="stat-card">
+<p><span class="stat-number">50+</span> <span class="stat-label">critères extensibles</span></p>
+</div>
 </div></div>
 <p><br></p>
 <p>Des questions ?</p>
 <aside class="notes">
-<p>50 critères métier, scoring transparent, consultation instantanée. Le traitement IA tourne en arrière-plan — le commercial a ses résultats en une seconde. Merci, on est prêts pour vos questions.</p>
+<p>Pour résumer : on a construit un outil qui transforme des documents bruts en une base de prospects qualifiés. Plus de 50 critères métier, un scoring transparent et auditable, une consultation instantanée. Merci beaucoup.</p>
 <style type="text/css">
         span.MJX_Assistive_MathML {
           position:absolute!important;
@@ -747,7 +770,7 @@
         margin: 0.1,
 
         math: {
-          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js',
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
           config: 'TeX-AMS_HTML-full',
           tex2jax: {
             inlineMath: [['\\(','\\)']],
@@ -795,12 +818,12 @@
           // flash "checked"
           button.classList.add('code-copy-button-checked');
           var currentTitle = button.getAttribute("title");
-          button.setAttribute("title", "Copied!");
+          button.setAttribute("title", "Copié");
           let tooltip;
           if (window.bootstrap) {
             button.setAttribute("data-bs-toggle", "tooltip");
             button.setAttribute("data-bs-placement", "left");
-            button.setAttribute("data-bs-title", "Copied!");
+            button.setAttribute("data-bs-title", "Copié");
             tooltip = new bootstrap.Tooltip(button, 
               { trigger: "manual", 
                 customClass: "code-copy-button-tooltip",
@@ -821,13 +844,14 @@
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
