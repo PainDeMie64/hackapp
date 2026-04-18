@@ -1,0 +1,269 @@
+[
+  {
+    "file": "03_vivatech_conference_notes.pdf",
+    "companies": [
+      {
+        "name": "Dassault Systemes",
+        "score": 18,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 19,
+          "project": 19,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "Schneider Electric",
+        "score": 33,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 90,
+          "recruitment": 12,
+          "financial": 7,
+          "project": 48,
+          "intent": 30,
+          "regulatory": 7,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "Valeo",
+        "score": 32,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 30,
+          "financial": 7,
+          "project": 66,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 7
+        }
+      },
+      {
+        "name": "OVHcloud",
+        "score": 0,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 3,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 7,
+          "intent": 3,
+          "regulatory": 60,
+          "competitive": 7
+        }
+      },
+      {
+        "name": "Capgemini Engineering",
+        "score": 0,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 30,
+          "financial": 0,
+          "project": 14,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 30
+        }
+      }
+    ]
+  },
+  {
+    "file": "12_salon_bourget_exhibitors.pdf",
+    "companies": [
+      {
+        "name": "DASSAULT AVIATION",
+        "score": 20,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 12,
+          "intent": 30,
+          "regulatory": 30,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "SAFRAN ELECTRONICS & DEFENSE",
+        "score": 19,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 7,
+          "intent": 30,
+          "regulatory": 30,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "LIEBHERR-AEROSPACE",
+        "score": 20,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 30,
+          "intent": 7,
+          "regulatory": 30,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "LATECOERE",
+        "score": 14,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 7,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "MBDA",
+        "score": 20,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 30,
+          "intent": 30,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "NAVAL GROUP",
+        "score": 17,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 30,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "SABENA TECHNICS",
+        "score": 10,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 48,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 0,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "SAFRAN GROUP",
+        "score": 20,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 30,
+          "intent": 30,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "THALES",
+        "score": 20,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 30,
+          "intent": 30,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "THALES ALENIA SPACE",
+        "score": 17,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 30,
+          "intent": 7,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      }
+    ]
+  },
+  {
+    "file": "21_mixed_language_report.pdf",
+    "companies": [
+      {
+        "name": "Siemens Energy France",
+        "score": 27,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 7,
+          "financial": 30,
+          "project": 48,
+          "intent": 0,
+          "regulatory": 12,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "ArcelorMittal France",
+        "score": 46,
+        "band": "qualified",
+        "dimensions": {
+          "firmographic": 60,
+          "recruitment": 60,
+          "financial": 48,
+          "project": 60,
+          "intent": 0,
+          "regulatory": 30,
+          "competitive": 0
+        }
+      },
+      {
+        "name": "Robert Bosch France SAS",
+        "score": 25,
+        "band": "cold",
+        "dimensions": {
+          "firmographic": 90,
+          "recruitment": 0,
+          "financial": 0,
+          "project": 48,
+          "intent": 0,
+          "regulatory": 0,
+          "competitive": 0
+        }
+      }
+    ]
+  }
+]

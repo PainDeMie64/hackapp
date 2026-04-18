@@ -31,12 +31,42 @@ export const companies = sqliteTable('companies', {
 	logoUrl: text('logo_url'),
 	status: text('status').default('active'),
 	enrichmentStatus: text('enrichment_status').default('pending'),
+	prospectScore: integer('prospect_score'),
+	prospectBand: text('prospect_band'),
+	scoredAt: integer('scored_at', { mode: 'timestamp' }),
 	lastEnrichedAt: integer('last_enriched_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()).$onUpdateFn(() => new Date())
 }, (table) => ([
 	index('companies_sector').on(table.sector),
 	index('companies_country').on(table.locationCountry)
+]));
+
+export const scoringDimensions = [
+	'firmographic',
+	'recruitment',
+	'financial',
+	'project',
+	'intent',
+	'regulatory',
+	'competitive'
+] as const;
+
+export type ScoringDimension = typeof scoringDimensions[number];
+
+export const prospectBands = ['hot', 'warm', 'qualified', 'cold'] as const;
+export type ProspectBand = typeof prospectBands[number];
+
+export const companyScores = sqliteTable('company_scores', {
+	id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+	companyId: text('company_id').notNull().references(() => companies.id),
+	dimension: text('dimension').notNull(),
+	score: integer('score').notNull(),
+	signals: text('signals'),
+	scoredAt: integer('scored_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+}, (table) => ([
+	uniqueIndex('scores_company_dimension').on(table.companyId, table.dimension),
+	index('scores_company').on(table.companyId)
 ]));
 
 export const news = sqliteTable('news', {
@@ -233,6 +263,8 @@ export type Source = typeof sources.$inferSelect;
 export type NewSource = typeof sources.$inferInsert;
 export type Company = typeof companies.$inferSelect;
 export type NewCompany = typeof companies.$inferInsert;
+export type CompanyScore = typeof companyScores.$inferSelect;
+export type NewCompanyScore = typeof companyScores.$inferInsert;
 export type NewsEntry = typeof news.$inferSelect;
 export type NewNewsEntry = typeof news.$inferInsert;
 export type ScrapeResult = typeof scrapeResults.$inferSelect;
