@@ -6,67 +6,89 @@ $body-color: #2d3748;
 $link-color: #3b5bdb;
 $code-block-bg: #1e293b;
 $code-color: #e2e8f0;
+$presentation-font-size-root: 28px;
 
 /*-- scss:rules --*/
 .reveal .slide-background {
   background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
 }
 
-.reveal h1, .reveal h2 {
+.reveal h2 {
   font-weight: 700;
+  font-size: 1.3em;
   letter-spacing: -0.02em;
+  border-bottom: 3px solid #3b5bdb;
+  padding-bottom: 0.2em;
+  margin-bottom: 0.4em;
 }
 
-.reveal h2 {
-  border-bottom: 3px solid #3b5bdb;
-  padding-bottom: 0.3em;
-  margin-bottom: 0.8em;
+.reveal h3 {
+  font-size: 0.85em;
+  margin-bottom: 0.2em;
+  margin-top: 0;
+}
+
+.reveal .slides section {
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .reveal table {
-  font-size: 0.75em;
-  margin: 0.5em auto;
+  font-size: 0.6em;
+  margin: 0.3em auto;
 }
 
 .reveal table th {
   background-color: #3b5bdb;
   color: white;
   font-weight: 600;
-  padding: 0.4em 0.8em;
+  padding: 0.25em 0.5em;
 }
 
 .reveal table td {
-  padding: 0.3em 0.8em;
+  padding: 0.2em 0.5em;
 }
 
 .reveal blockquote {
-  border-left: 4px solid #3b5bdb;
+  border-left: 3px solid #3b5bdb;
   background: rgba(59, 91, 219, 0.05);
-  padding: 0.5em 1em;
+  padding: 0.3em 0.8em;
   font-style: italic;
-  font-size: 0.85em;
+  font-size: 0.7em;
+  margin: 0.2em 0;
 }
 
 .reveal .callout {
-  font-size: 0.8em;
-  margin-top: 0.5em;
-}
-
-.reveal .columns {
+  font-size: 0.65em;
   margin-top: 0.3em;
 }
 
-.reveal ul {
-  font-size: 0.82em;
-  line-height: 1.5;
+.reveal .columns {
+  margin-top: 0.2em;
+}
+
+.reveal ul, .reveal ol {
+  font-size: 0.72em;
+  line-height: 1.4;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+.reveal li {
+  margin-bottom: 0.15em;
+}
+
+.reveal p {
+  font-size: 0.75em;
+  margin: 0.2em 0;
 }
 
 .reveal .slide-number {
-  font-size: 0.6em;
+  font-size: 0.5em;
   color: #64748b;
 }
 
 .reveal .footer {
-  font-size: 0.55em;
+  font-size: 0.45em;
   color: #94a3b8;
 }

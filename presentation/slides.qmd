@@ -23,9 +23,8 @@ format:
 ### Prospection traditionnelle
 
 - Recherche **manuelle** sur des dizaines de sources
-- **Semaines** pour qualifier un vivier de prospects
+- **Semaines** pour qualifier un vivier
 - Critères **subjectifs**, non reproductibles
-- Données dispersées et non structurées
 :::
 
 ::: {.column width="50%"}
@@ -34,93 +33,76 @@ format:
 - **35 000+** postes ingénierie ouverts en France
 - Fenêtres d'opportunité **ratées**
 - Pas de vision **consolidée** du marché
-- Des signaux **noyés** dans le bruit documentaire
 :::
 :::
 
 ::: {.notes}
-Bonjour à tous. ALTEN, leader européen du conseil en ingénierie avec 33 000 collaborateurs en France, fait face à un défi quotidien : identifier les bonnes entreprises à prospecter. Aujourd'hui, un commercial passe des semaines à éplucher des rapports, des offres d'emploi, des articles de presse. Il y a plus de 35 000 postes ingénierie ouverts en France — autant de signaux que personne n'a le temps de consolider. On perd des fenêtres critiques.
+Bonjour à tous. ALTEN, leader européen du conseil en ingénierie avec 33 000 collaborateurs en France, fait face à un défi quotidien : identifier les bonnes entreprises à prospecter. Un commercial passe des semaines à éplucher des rapports, des offres d'emploi, des articles de presse. Plus de 35 000 postes ingénierie ouverts en France — autant de signaux que personne n'a le temps de consolider. On perd des fenêtres critiques.
 :::
 
-## Notre Approche : Pré-calculer pour Décider Vite {.center}
+## Pré-calculer pour Décider Vite {.center}
 
 ::: {.columns}
 ::: {.column width="55%"}
-### Traitement en arrière-plan
+L'IA analyse les documents **périodiquement** et alimente une base pré-calculée
 
-L'IA analyse les documents **périodiquement** : pages web, rapports annuels, avis de marché, articles de presse
-
-Elle extrait, structure et score les données dans une **base pré-calculée**
-
-### Consultation instantanée
-
-Le commercial interroge une base **déjà prête** — pas d'attente, pas de traitement à la volée
-
-Filtres, tri, export en **quelques secondes**
+Le commercial interroge une base **déjà prête** — pas d'attente
 :::
 
 ::: {.column width="45%"}
-
 | Étape | Fréquence |
 |-------|-----------|
 | Collecte de sources | Hebdomadaire |
 | Extraction IA | À chaque mise à jour |
 | Scoring | Automatique |
 | **Consultation** | **Instantanée** |
-| Export Google Sheets | À la demande |
-
 :::
 :::
 
 ::: {.notes}
-Notre approche clé : séparer le traitement lourd de la consultation. L'IA tourne en arrière-plan, périodiquement — quand de nouvelles sources arrivent, elle extrait les données, les structure, les score. Le résultat va dans une base pré-calculée. Quand le commercial a besoin d'une liste de prospects, il ne lance pas un calcul — il interroge une base déjà prête. Filtres par secteur, tri par score, export Sheets — tout est instantané.
+Notre approche clé : séparer le traitement lourd de la consultation. L'IA tourne en arrière-plan, périodiquement. Quand le commercial a besoin d'une liste de prospects, il interroge une base déjà prête. Filtres par secteur, tri par score, export Sheets — tout est instantané.
 :::
 
-## Un Référentiel de 50 Critères Métier {.center}
+## 50 Critères Métier en 8 Familles {.center}
 
 ::: {.columns}
-::: {.column width="50%"}
-### 8 familles de signaux
-
-1. **Firmographique** — secteur, taille, implantation
-2. **Recrutement** — volume, durée, compétences rares
-3. **Financier** — croissance, R&D, levées de fonds
-4. **Projet** — usines, programmes, migrations
-5. **Organisationnel** — M&A, changements de direction
-6. **Technologique** — legacy, cloud, cybersécurité
-7. **Réglementaire** — AI Act, NIS2, certifications
-8. **Actualités** — contrats, crises, salons
+::: {.column width="45%"}
+1. **Firmographique** — secteur, taille
+2. **Recrutement** — volume, compétences rares
+3. **Financier** — croissance, R&D
+4. **Projet** — usines, migrations
+5. **Organisationnel** — M&A, direction
+6. **Technologique** — legacy, cloud
+7. **Réglementaire** — NIS2, certifications
+8. **Actualités** — contrats, crises
 :::
 
-::: {.column width="50%"}
+::: {.column width="55%"}
 ### Exemples concrets
 
 - **20+ offres** ingénierie ouvertes > 60 jours
-- Croissance CA **> 10%** sans hausse d'effectifs
+- Croissance CA **> 10%**, effectifs stables
 - Subvention **France 2030** obtenue
-- Échéance **NIS2** ou **DORA** imminente
-- Compétences rares : FPGA, AUTOSAR, DO-178B
-- Contrat défense **majeur** remporté
+- Échéance **NIS2** imminente
+- Compétences rares : FPGA, AUTOSAR
 :::
 :::
 
 ::: {.notes}
-Le cœur de l'outil, c'est un référentiel de 50 critères métier, consolidé à partir de 20 sources de recherche sur la prospection en conseil en ingénierie. On ne cherche pas juste des mots-clés — on détecte des situations business : une croissance de chiffre d'affaires sans hausse d'effectifs, ça signale un écart de capacité. 20 offres ingénierie ouvertes depuis plus de 60 jours, c'est un échec de recrutement — une porte ouverte pour le consulting. Une subvention France 2030, un nouveau CTO, une échéance NIS2 — chaque critère a sa logique métier.
+Le cœur de l'outil : 50 critères métier consolidés à partir de 20 sources de recherche. On détecte des situations business : une croissance sans hausse d'effectifs signale un écart de capacité. 20 offres ouvertes depuis 60 jours, c'est un échec de recrutement — une porte ouverte pour le consulting. Chaque critère a sa logique métier.
 :::
 
-## Scoring Hybride : Transparent et Auditable {.center}
+## Scoring Hybride et Auditable {.center}
 
 ::: {.columns}
 ::: {.column width="45%"}
 ### L'IA extrait les **signaux**
 
-> *"500+ postes ingénierie ouverts depuis 60 jours"*
+> *"500+ postes ouverts depuis 60 jours"*
 
-> *"Croissance CA +14%, effectifs stables"*
+> *"CA +14%, effectifs stables"*
 
-> *"Programme EPR2, recrutement sûreté nucléaire"*
-
-Chaque signal est **factuel**, extrait du document source
+Chaque signal est **factuel** et traçable
 :::
 
 ::: {.column width="55%"}
@@ -132,81 +114,71 @@ Chaque signal est **factuel**, extrait du document source
 | Firmographique | **20%** |
 | Financier | **15%** |
 | Projet / Expansion | **15%** |
-| Intention | **10%** |
-| Réglementaire | **10%** |
+| Intention / Réglementaire | **20%** |
 | Concurrentiel | **5%** |
-
-**Score 0-100** → Hot / Warm / Qualifié / Froid
 :::
 :::
 
 ::: {.notes}
-On ne demande pas à l'IA de donner une note — ce serait une boîte noire. On lui demande d'extraire des signaux factuels depuis les documents. Ensuite, un algorithme déterministe applique les pondérations : le recrutement pèse 25%, le profil d'entreprise 20%, et ainsi de suite. Le commercial peut toujours voir pourquoi une entreprise est scorée à 75 — c'est traçable jusqu'au document source. Ce n'est pas magique, c'est auditable.
+On ne demande pas à l'IA de donner une note — ce serait une boîte noire. Elle extrait des signaux factuels. Ensuite, un algorithme déterministe applique les pondérations. Le commercial peut voir pourquoi une entreprise est scorée à 75 — c'est traçable jusqu'au document source. Pas magique, auditable.
 :::
 
 ## Disqualification Automatique {.center}
 
 ::: {.columns}
-::: {.column width="55%"}
+::: {.column width="50%"}
 ### Signaux négatifs détectés
 
 - Faillite ou redressement judiciaire
-- Politique d'**internalisation** affichée
-- Trop petit (< 50 salariés, pas de budget consulting)
-- Gel des embauches **sans** projets actifs
+- Politique d'**internalisation**
+- Trop petit (< 50 salariés)
+- Gel des embauches sans projets
 - Sanctions / risque géopolitique
-- Exclusivité verrouillée avec un concurrent
-
-→ Score automatiquement à **0**, classé "Froid"
 :::
 
-::: {.column width="45%"}
+::: {.column width="50%"}
 ### Validé sur la démo
 
 | Entreprise | Signal | Score |
 |------------|--------|-------|
-| Atos SE | Redressement judiciaire | **0** |
-| Orpea | Restructuration dette | **0** |
-| Criteo | Politique d'internalisation | **0** |
-| MicroTech | Trop petit (30 salariés) | **0** |
+| Atos | Redressement | **0** |
+| Orpea | Restructuration | **0** |
+| Criteo | Internalisation | **0** |
+| MicroTech | 30 salariés | **0** |
 :::
 :::
 
 ::: {.notes}
-Le système ne se contente pas de détecter les bons prospects — il élimine les mauvais. Une entreprise en faillite comme Atos, avec une politique d'internalisation comme Criteo, ou trop petite comme une PME de 30 personnes, est automatiquement disqualifiée. Score zéro. Ça évite au commercial de perdre du temps sur des cibles impossibles. Sur notre démo, toutes les disqualifications ont été correctement détectées.
+Le système élimine aussi les mauvais prospects. Une entreprise en faillite, avec une politique d'internalisation, ou trop petite est automatiquement disqualifiée — score zéro. Sur notre démo, toutes les disqualifications ont été correctement détectées.
 :::
 
-## Un Design Flexible et Extensible {.center}
+## Design Flexible {.center}
 
 ::: {.columns}
 ::: {.column width="50%"}
 ### Sources multiples
 
-- Pages web sauvegardées en PDF
-- Rapports annuels et financiers
-- Articles de presse et communiqués
+- Pages web, rapports annuels
+- Articles de presse, communiqués
 - Avis de marché (BOAMP, TED)
-- Fiches entreprise (Pappers, LinkedIn)
-- Catalogues de salons professionnels
 - Documents multilingues (FR/EN/DE)
 :::
 
 ::: {.column width="50%"}
-### Adaptable à tout besoin
+### Adaptable
 
-- **Pondérations ajustables** : un secteur priorise le recrutement, un autre la réglementation
-- **Critères extensibles** : ajouter un signal = ajouter une colonne
-- **Multi-format** : le pipeline accepte tout document convertible en texte
-- **Export flexible** : dashboard web, Google Sheets, API
+- **Pondérations ajustables** par secteur
+- **Critères extensibles** : +1 signal = +1 colonne
 - **Scoring reproductible** : mêmes données → même score
+- **Export flexible** : dashboard, Sheets, API
 :::
 :::
 
 ::: {.notes}
-Le design est pensé pour être flexible. Les pondérations sont ajustables — si demain ALTEN veut prioriser la réglementation plutôt que le recrutement pour un secteur donné, c'est un paramètre à changer. Ajouter un nouveau critère, c'est ajouter une colonne. Le pipeline accepte n'importe quel document — on a testé avec des rapports multi-colonnes, du jargon juridique, des documents trilingues, des catalogues de salon. Et le scoring est reproductible : mêmes documents, mêmes critères, même résultat.
+Le design est flexible. Les pondérations sont ajustables — prioriser la réglementation plutôt que le recrutement pour un secteur, c'est un paramètre. Ajouter un critère, c'est ajouter une colonne. Le pipeline accepte tout document convertible en texte. Et le scoring est reproductible : mêmes données, même résultat.
 :::
 
-## Résultats de la Démo {.center}
+## Résultats {.center}
 
 ::: {.columns}
 ::: {.column width="40%"}
@@ -214,27 +186,25 @@ Le design est pensé pour être flexible. Les pondérations sont ajustables — 
 
 - **30 documents** analysés
 - **143 entreprises** identifiées
-- **50 critères** évalués chacune
-- Consultation : **< 1 seconde**
+- **50 critères** évalués
+- Consultation **< 1 seconde**
 :::
 
 ::: {.column width="60%"}
 ### Prospects identifiés
 
-| Priorité | Score | Exemples | Action |
-|----------|-------|----------|--------|
-| Warm | 60-79 | AXA, SocGen, bioMérieux | Contact ciblé |
-| Qualifié | 40-59 | Medtronic, Legrand | Nurturing |
-| Froid | 0-39 | Veille ou disqualifié | Monitorer |
+| Priorité | Score | Exemples |
+|----------|-------|----------|
+| Warm | 60-79 | AXA (75), SocGen (71) |
+| Qualifié | 40-59 | Medtronic, Legrand |
+| Froid | < 40 | Veille ou disqualifié |
 
-**Top** : AXA (75), Société Générale (71), bioMérieux (68), Crédit Agricole (65)
-
-Disqualifiés correctement : Atos, Orpea, Casino, Criteo
+Disqualifiés : Atos, Orpea, Casino, Criteo → **0**
 :::
 :::
 
 ::: {.notes}
-Sur notre démo : 30 documents analysés, 143 entreprises extraites, chacune évaluée sur 50 critères. Une fois les données en base, la consultation est instantanée — moins d'une seconde pour filtrer, trier, exporter. Les résultats sont cohérents : AXA à 75 grâce à sa migration cloud massive et ses besoins DevOps, bioMérieux à 68 avec la pression réglementaire IVDR. Et les disqualifications fonctionnent : Atos, Orpea, Casino — score zéro automatique.
+30 documents analysés, 143 entreprises, chacune évaluée sur 50 critères. La consultation est instantanée. AXA à 75 grâce à sa migration cloud, bioMérieux à 68 avec la pression IVDR. Disqualifications correctes. La base est prête, le commercial consulte.
 :::
 
 ## Valeur Business {.center}
@@ -246,24 +216,22 @@ Sur notre démo : 30 documents analysés, 143 entreprises extraites, chacune év
 | | Avant | Après |
 |---|---|---|
 | Qualifier un prospect | 2-4h | **instantané** |
-| Analyser un document | 30 min | **automatique** |
-| Couverture marché | ~50 entreprises | **illimitée** |
-| Mise à jour | Trimestrielle | **hebdomadaire** |
+| Couverture marché | ~50 | **illimitée** |
+| Mise à jour | Trimestrielle | **hebdo** |
 :::
 
 ::: {.column width="50%"}
-### Impact commercial
+### Impact
 
-- **+30% de temps** libéré pour la relation client
-- Détection **précoce** d'opportunités invisibles
+- **+30% de temps** pour la relation client
+- Détection **précoce** d'opportunités
 - Couverture **exhaustive** du marché
-- Décisions de prospection **objectives** et traçables
-- Export direct vers les outils du commercial
+- Décisions **traçables** et objectives
 :::
 :::
 
 ::: {.notes}
-L'impact est concret. Avant : un commercial passait des heures à qualifier chaque prospect. Maintenant, il ouvre le dashboard ou le Google Sheet et la liste est déjà là, triée par pertinence. La mise à jour est hebdomadaire et automatique. Et surtout, le système détecte des signaux qu'un humain raterait — une subvention France 2030 mentionnée dans un PDF, un pic de recrutement sur des compétences rares. C'est de la couverture exhaustive avec des décisions traçables.
+Le commercial ouvre le dashboard, la liste est là, triée par pertinence. La mise à jour est hebdomadaire et automatique. Le système détecte des signaux qu'un humain raterait. Couverture exhaustive, décisions traçables.
 :::
 
 ## Merci ! {.center}
@@ -274,8 +242,6 @@ L'impact est concret. Avant : un commercial passait des heures à qualifier chaq
 
 **50 critères** · **Scoring auditable** · **Consultation instantanée**
 
-<br>
-
 ::: {.columns}
 ::: {.column width="33%"}
 **143 entreprises**
@@ -285,12 +251,12 @@ identifiées et scorées
 ::: {.column width="33%"}
 **< 1 seconde**
 
-pour consulter et filtrer
+pour consulter
 :::
 ::: {.column width="33%"}
 **50 critères**
 
-extensibles et ajustables
+extensibles
 :::
 :::
 
@@ -299,5 +265,5 @@ extensibles et ajustables
 Des questions ?
 
 ::: {.notes}
-Pour résumer : on a construit un outil qui transforme des documents bruts en une base de prospects qualifiés. 50 critères métier, un scoring transparent et auditable, une consultation instantanée. Le traitement IA tourne en arrière-plan — le commercial, lui, a ses résultats en une seconde. Merci beaucoup. On est prêts pour vos questions.
+50 critères métier, scoring transparent, consultation instantanée. Le traitement IA tourne en arrière-plan — le commercial a ses résultats en une seconde. Merci, on est prêts pour vos questions.
 :::
