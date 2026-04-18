@@ -45,10 +45,8 @@
 
 <div class={cn('relative inline-flex items-center justify-center', className)} style="width:{dim.px}px;height:{dim.px}px">
 	<svg
-		width={dim.px}
-		height={dim.px}
 		viewBox="0 0 {dim.px} {dim.px}"
-		class="absolute inset-0 -rotate-90"
+		class="absolute inset-0 w-full h-full -rotate-90"
 	>
 		<circle
 			cx={dim.px / 2}

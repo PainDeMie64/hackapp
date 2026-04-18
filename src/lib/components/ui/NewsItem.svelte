@@ -7,12 +7,19 @@
 		title: string;
 		source: string;
 		date: string;
+		sourceUrl?: string | null;
 		category?: 'industrie' | 'client' | 'prospect';
 		read?: boolean;
 		class?: string;
 	}
 
-	let { title, source, date, category = 'industrie', read = false, class: className }: Props = $props();
+	let { title, source, date, sourceUrl, category = 'industrie', read = false, class: className }: Props = $props();
+
+	let href = $derived(
+		sourceUrl && sourceUrl.startsWith('http')
+			? sourceUrl
+			: `https://www.google.com/search?q=${encodeURIComponent(title + ' ' + source)}`
+	);
 
 	const categoryLabels = {
 		industrie: 'Industrie',
@@ -33,8 +40,8 @@
 	};
 </script>
 
-<div class={cn(
-	'group flex items-start gap-3 py-4 cursor-pointer -mx-4 px-4 rounded-r-xl transition-all duration-300 ease-out',
+<a {href} target="_blank" rel="noopener noreferrer" class={cn(
+	'group flex items-start gap-3 py-4 cursor-pointer -mx-4 px-4 rounded-r-xl transition-all duration-300 ease-out no-underline',
 	'border-l-3 hover:bg-surface-50 hover:translate-x-1',
 	categoryBorders[category],
 	read && 'opacity-60',
@@ -48,4 +55,4 @@
 		<p class="text-base text-surface-400 mt-1">{source} · {date}</p>
 	</div>
 	<ChevronRight class="h-5 w-5 text-surface-300 shrink-0 mt-2 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-brand-500" />
-</div>
+</a>

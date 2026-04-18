@@ -3,7 +3,9 @@ import { getDb } from '$lib/server/db/index.js';
 import { companies, news, sources, prospectScores } from '$lib/server/db/schema.js';
 import { eq, desc } from 'drizzle-orm';
 
-export const load: PageServerLoad = async ({ platform }) => {
+export const load: PageServerLoad = async ({ platform, url }) => {
+	const sectorFilter = url.searchParams.get('sector');
+	const bandFilter = url.searchParams.get('band');
 	const empty = { prospects: [] as { id: string; name: string; score: number; band: string; sector: string; locationCity: string | null; employeeCount: number | null; revenueEur: number | null; reason: string; sources: string[]; rank: number }[] };
 
 	try {
@@ -29,7 +31,33 @@ export const load: PageServerLoad = async ({ platform }) => {
 			newsByCompany.set(n.companyId, existing);
 		}
 
-		const prospects = companyRows.map((company) => {
+		const sectorKeywords: Record<string, string[]> = {
+			aeronautique: ['Aerospace', 'Aeronautique', 'Space'],
+			automobile: ['Automotive', 'Automobile', 'EV/Battery'],
+			defense: ['Defense', 'Defence', 'Naval', 'Maritime'],
+			energie: ['Energy', 'Nuclear', 'Hydrogen', 'Renewables'],
+			pharma: ['Pharma', 'Medical', 'Life Sciences', 'Biotech'],
+			telecoms: ['Telecoms', 'Telecom'],
+			it: ['IT', 'Technology', 'Cloud', 'Cybersecurity', 'PLM'],
+			industrie: ['Manufacturing', 'Industrial', 'Construction'],
+		};
+
+		let filteredCompanies = companyRows;
+		if (sectorFilter && sectorKeywords[sectorFilter]) {
+			const keywords = sectorKeywords[sectorFilter];
+			filteredCompanies = companyRows.filter(c =>
+				keywords.some(k => c.sector?.toLowerCase().includes(k.toLowerCase()))
+			);
+		}
+		if (bandFilter) {
+			const bands = bandFilter.split(',');
+			filteredCompanies = filteredCompanies.filter(c => {
+				const ps = scoreMap.get(c.id);
+				return bands.includes(ps?.scoreLabel ?? 'cold');
+			});
+		}
+
+		const prospects = filteredCompanies.map((company) => {
 			const ps = scoreMap.get(company.id);
 			const score = ps?.totalScore ?? 0;
 			const band = ps?.scoreLabel ?? 'cold';

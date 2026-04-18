@@ -474,7 +474,7 @@
 				{/if}
 
 				<a
-					href="/recherche/loading"
+					href={`/resultats?sector=${encodeURIComponent(sector)}&band=hot,warm`}
 					class="btn-shine inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-200 cursor-pointer text-white shadow-md hover:shadow-lg w-full text-lg py-4 mt-2 min-h-14 bg-brand-500 hover:bg-brand-600 active:bg-brand-700"
 				>
 					Lancer la recherche
