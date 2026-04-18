@@ -1,14 +1,18 @@
 # HackApp
 
-A hackathon webapp starter built for speed. SvelteKit 5, Tailwind v4, Cloudflare D1, and a ready-to-use component library — just add your idea.
+ALTEN Commercial Intelligence & Prospecting Agent — built for the AI For Business Hackathon (Centrale Nantes Etudes, April 2026).
+
+AI-powered prospecting tool that automatically finds companies in a target sector, analyzes them, saves structured data to Google Sheets, and generates market + news reports.
 
 ## Stack
 
 - **SvelteKit 5** — runes, snippets, TypeScript strict mode
 - **Tailwind CSS v4** — OKLCH color tokens, class-based dark mode
 - **Drizzle ORM + Cloudflare D1** — type-safe SQL on the edge
-- **Cloudflare Pages** — global deployment in seconds
-- **UI Components** — Button, Input, Textarea, Select, Card, Modal, Badge, Spinner, Nav, ThemeToggle, Toaster
+- **n8n** — local workflow engine for the AI prospecting agent
+- **OpenAI** — prospect analysis, market reports, news digests
+- **Google Sheets** — real-time prospect database
+- **Cloudflare Pages** — global deployment
 
 ## Getting Started
 
@@ -21,32 +25,51 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173).
 
+## n8n Workflow (Prospect Agent)
+
+The AI prospecting agent runs as a local n8n workflow.
+
+```bash
+npm run n8n
+```
+
+This starts n8n at [http://localhost:5679](http://localhost:5679), creates an admin account, and imports the workflow.
+
+**Login:** `admin@hackapp.dev` / `HackApp2026!`
+
+### How it works
+
+```
+Frontend (POST /webhook/prospect-search)
+  → Google Custom Search (find companies by sector + location)
+  → AI analysis per company (OpenAI — structured prospect data)
+  → Google Sheets (save each prospect in real time)
+  → AI Market Report + News API digest
+  → JSON response back to frontend
+```
+
+### Required credentials (configure in n8n UI)
+
+1. **OpenAI** — API key for prospect analysis + reports
+2. **Google Sheets** — OAuth2 for writing prospect data
+3. **Google Custom Search** — set as n8n environment variables:
+   - `GOOGLE_SEARCH_API_KEY`
+   - `GOOGLE_SEARCH_ENGINE_ID`
+   - `GOOGLE_SHEET_ID`
+4. **News API** (optional) — `NEWS_API_KEY` from newsapi.org
+
 ## Scripts
 
 | Command | What it does |
 |---------|-------------|
-| `npm run dev` | Start dev server |
+| `npm run dev` | Start SvelteKit dev server |
+| `npm run n8n` | Start n8n + import prospect workflow |
 | `npm run build` | Production build |
 | `npm run check` | Type check |
 | `npm run deploy` | Build + deploy to Cloudflare Pages |
 | `npm run db:generate` | Generate Drizzle migrations |
 | `npm run db:migrate:local` | Apply migrations locally |
 | `npm run cf-typegen` | Regenerate Cloudflare env types |
-
-## Database
-
-Uses Cloudflare D1 via Drizzle ORM. Schema lives in `src/lib/server/db/schema.ts`.
-
-```bash
-# Generate a migration after editing the schema
-npm run db:generate
-
-# Apply locally
-npm run db:migrate:local
-
-# Apply to production
-npx wrangler d1 migrations apply hackapp-db --remote
-```
 
 ## Project Structure
 
@@ -59,8 +82,11 @@ src/
     utils/           cn() class merge helper
   routes/
     +layout.svelte   Root layout with nav + toaster
-    +page.svelte     Landing page / component showcase
+    +page.svelte     Landing page
     api/health/      Health check endpoint
+n8n/
+  prospect-agent.workflow.json   n8n workflow definition
+  setup.sh                       Launch + auto-import script
 ```
 
 ## Deploy
