@@ -96,6 +96,8 @@ git pull && npm run n8n:import                                  # get teammate's
 | `npm run build` | Production build |
 | `npm run check` | Type check |
 | `npm run deploy` | Build + deploy to Cloudflare Pages |
+| `npm run db:push` | Overwrite remote D1 with local data |
+| `npm run db:pull` | Overwrite local D1 with remote data |
 | `npm run db:generate` | Generate Drizzle migrations |
 | `npm run db:migrate:local` | Apply migrations locally |
 | `npm run cf-typegen` | Regenerate Cloudflare env types |

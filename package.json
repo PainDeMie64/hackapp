@@ -15,6 +15,8 @@
     "cf-typegen": "wrangler types src/worker-configuration.d.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "wrangler d1 migrations apply hackapp-db --local",
+    "db:push": "./scripts/db-push.sh",
+    "db:pull": "./scripts/db-pull.sh",
     "db:studio": "drizzle-kit studio",
     "n8n": "./n8n/setup.sh",
     "n8n:import": "node n8n/import.mjs",
