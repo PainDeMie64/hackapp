@@ -15,6 +15,19 @@
 
 	let mounted = $state(false);
 
+	function exportCsv() {
+		const c = data.company;
+		const headers = ['name','domain','sector','subsector','location_city','location_country','employee_count','revenue_eur','tech_stack','siren','prospect_score','prospect_band'];
+		const values = [c.name,c.domain,c.sector,c.subsector,c.locationCity,c.locationCountry,c.employeeCount,c.revenueEur,c.techStack,c.siren,c.prospectScore,c.prospectBand]
+			.map(v => v === null || v === undefined ? '' : String(v).includes(',') ? `"${v}"` : String(v));
+		const csv = headers.join(',') + '\n' + values.join(',');
+		const blob = new Blob([csv], { type: 'text/csv' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url; a.download = `${c.name?.replace(/\s+/g, '_') ?? 'company'}.csv`;
+		a.click(); URL.revokeObjectURL(url);
+	}
+
 	$effect(() => {
 		mounted = true;
 	});
@@ -159,7 +172,7 @@
 					<BookmarkPlus class="h-4 w-4" />
 					Ajouter au rapport
 				</button>
-				<button class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 border border-brand-200 bg-white hover:bg-brand-50 px-4 py-2.5 rounded-full transition-all hover:shadow-sm cursor-pointer">
+				<button onclick={exportCsv} class="inline-flex items-center gap-2 text-sm font-medium text-brand-600 border border-brand-200 bg-white hover:bg-brand-50 px-4 py-2.5 rounded-full transition-all hover:shadow-sm cursor-pointer">
 					<Download class="h-4 w-4" />
 					Exporter
 				</button>

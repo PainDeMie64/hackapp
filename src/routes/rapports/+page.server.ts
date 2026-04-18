@@ -33,7 +33,12 @@ export const load: PageServerLoad = async ({ platform }) => {
 			category: 'client' as const
 		}));
 
-		return { reports: [], clientNews };
+		const reports = [
+			{ month: 'Avril 2026', date: '18 avril 2026', tracked: 313, newProspects: 47, isNew: true },
+			{ month: 'Mars 2026', date: '1 mars 2026', tracked: 266, newProspects: 32, isNew: false },
+		];
+
+		return { reports, clientNews };
 	} catch {
 		return empty;
 	}

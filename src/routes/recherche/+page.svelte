@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { Card, Button, Input, Select, Textarea, MapModal, TypingIndicator } from '$lib/components/ui/index.js';
-	import { Send, ChevronDown, ChevronUp, MapPin, MessageSquare, ListFilter, Sparkles, Building2, Users, Search, X } from 'lucide-svelte';
+	import { Card, Button, Input, Select, Textarea, MapModal } from '$lib/components/ui/index.js';
+	import { ChevronDown, ChevronUp, MapPin, Building2, Users, Search, X } from 'lucide-svelte';
 	import { cn } from '$lib/utils/cn.js';
 
-	let activeTab = $state(0);
 	let showAdvanced = $state(false);
 	let mapOpen = $state(false);
 	let zoneDropdownOpen = $state(false);
@@ -20,8 +19,6 @@
 		}
 		region = selectedRegions.length > 0 ? 'carte' : '';
 	}
-	let isTyping = $state(true);
-	let messagesContainer: HTMLDivElement | undefined = $state(undefined);
 
 	let sector = $state('');
 	let region = $state('');
@@ -33,66 +30,15 @@
 	let growthPotential = $state('');
 	let consultingUsage = $state('');
 
-	const currentStep = 1;
-	const totalSteps = 6;
-
-	const tabs = [
-		{ label: 'Assistant', icon: MessageSquare },
-		{ label: 'Formulaire', icon: ListFilter }
-	];
-
-	const chatMessages = [
-		{ role: 'bot', text: "Bonjour ! Je vais vous aider a trouver des prospects pour ALTEN. Nous allons proceder etape par etape.", time: '10:44' },
-		{ role: 'bot', text: "Dans quel secteur d'activite recherchez-vous des prospects ?", time: '10:45' }
-	];
-
-	const quickChoices = ['Aeronautique', 'Automobile', 'Defense', 'Energie', 'Telecoms', 'Autre...'];
-
 	function handleWindowClick(e: MouseEvent) {
 		const target = e.target as HTMLElement;
 		if (zoneDropdownOpen && !target.closest('.zone-dropdown-container')) {
 			zoneDropdownOpen = false;
 		}
 	}
-
-	$effect(() => {
-		if (messagesContainer) {
-			messagesContainer.scrollTop = messagesContainer.scrollHeight;
-		}
-	});
 </script>
 
 <style>
-	@keyframes gradient-rotate {
-		0% { background-position: 0% 50%; }
-		50% { background-position: 100% 50%; }
-		100% { background-position: 0% 50%; }
-	}
-
-	.animated-border {
-		position: relative;
-		isolation: isolate;
-	}
-
-	.animated-border::before {
-		content: '';
-		position: absolute;
-		inset: -2px;
-		border-radius: 14px;
-		background: linear-gradient(
-			120deg,
-			oklch(0.45 0.15 250) 0%,
-			oklch(0.66 0.17 250) 25%,
-			oklch(0.45 0.15 250) 50%,
-			oklch(0.38 0.15 250) 75%,
-			oklch(0.45 0.15 250) 100%
-		);
-		background-size: 300% 300%;
-		animation: gradient-rotate 4s ease infinite;
-		z-index: -1;
-		opacity: 0.6;
-	}
-
 	@keyframes shine {
 		0% { left: -100%; }
 		100% { left: 200%; }
@@ -129,111 +75,7 @@
 <div>
 	<h1 class="text-2xl font-bold text-surface-900 mb-6">Nouvelle Recherche</h1>
 
-	<!-- Tab switcher: pill style with icons -->
-	<div role="tablist" class="flex gap-1.5 p-1.5 bg-surface-100 rounded-xl mb-6 w-fit">
-		{#each tabs as tab, i}
-			<button
-				role="tab"
-				aria-selected={activeTab === i}
-				tabindex={activeTab === i ? 0 : -1}
-				onclick={() => (activeTab = i)}
-				class={cn(
-					'flex items-center gap-2 text-base font-medium px-5 py-2.5 rounded-lg transition-all duration-200 cursor-pointer',
-					activeTab === i
-						? 'bg-white text-brand-600 font-semibold shadow-sm'
-						: 'text-surface-400 hover:text-surface-700'
-				)}
-			>
-				<tab.icon class="h-4.5 w-4.5" />
-				{tab.label}
-			</button>
-		{/each}
-	</div>
-
-	{#if activeTab === 0}
-		<!-- Chat tab with animated gradient border -->
-		<div class="animated-border rounded-xl">
-			<Card padding="none" class="overflow-hidden">
-				<div class="flex flex-col h-[600px]">
-					<!-- Header -->
-					<div class="flex items-center gap-2.5 px-6 py-4 bg-brand-500 text-white">
-						<div class="flex items-center justify-center w-8 h-8 rounded-lg bg-white/20">
-							<Sparkles class="h-4.5 w-4.5" />
-						</div>
-						<div>
-							<h2 class="text-base font-semibold leading-tight">Assistant IA</h2>
-							<p class="text-xs text-white/70">Recherche guidee de prospects</p>
-						</div>
-					</div>
-
-					<div bind:this={messagesContainer} class="flex-1 overflow-y-auto p-6 space-y-4">
-						{#each chatMessages as msg}
-							<div class={cn(
-								'max-w-[75%]',
-								msg.role === 'bot' ? '' : 'ml-auto'
-							)}>
-								<div class={cn(
-									'rounded-2xl p-5 text-lg',
-									msg.role === 'bot'
-										? 'bg-surface-100 rounded-tl-sm text-surface-900 shadow-sm'
-										: 'bg-brand-500 text-white rounded-tr-sm shadow-md shadow-brand-500/20'
-								)}>
-									{msg.text}
-								</div>
-								<span class={cn(
-									'block text-xs text-surface-400 mt-1.5',
-									msg.role === 'bot' ? 'text-left' : 'text-right'
-								)}>{msg.time}</span>
-							</div>
-						{/each}
-
-						{#if isTyping}
-							<div class="max-w-[75%]">
-								<TypingIndicator class="bg-surface-100 rounded-2xl rounded-tl-sm shadow-sm" />
-							</div>
-						{/if}
-
-						<div class="flex flex-wrap gap-2 mt-2">
-							{#each quickChoices as choice}
-								<button
-									class="text-lg px-6 py-3 rounded-xl bg-surface-200 text-surface-900 font-medium transition-all duration-200 cursor-pointer hover:-translate-y-0.5 hover:shadow-md hover:bg-surface-300 active:translate-y-0"
-								>
-									{choice}
-								</button>
-							{/each}
-						</div>
-					</div>
-
-					<!-- Segmented progress bar -->
-					<div class="flex items-center gap-3 px-6 py-3 border-t border-surface-200 bg-surface-50">
-						<span class="text-sm font-medium text-surface-500">Question {currentStep} sur {totalSteps}</span>
-						<div class="flex gap-1 flex-1 max-w-48">
-							{#each Array(totalSteps) as _, i}
-								<div
-									class={cn(
-										'h-1.5 flex-1 rounded-full transition-colors duration-300',
-										i < currentStep ? 'bg-brand-500' : 'bg-surface-200'
-									)}
-								></div>
-							{/each}
-						</div>
-					</div>
-
-					<div class="flex gap-3 p-4 border-t border-surface-200 bg-white">
-						<input
-							type="text"
-							placeholder="Tapez votre reponse..."
-							class="flex-1 text-lg px-4 py-3.5 rounded-xl border-2 border-surface-300 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/20"
-						/>
-						<Button size="lg" class="px-5 py-3.5 rounded-xl">
-							<Send class="h-5 w-5" />
-						</Button>
-					</div>
-				</div>
-			</Card>
-		</div>
-	{:else}
-		<!-- Form tab -->
+	<!-- Search form -->
 		<Card padding="lg">
 			<form class="flex flex-col gap-6" onsubmit={(e) => e.preventDefault()}>
 				<!-- Form illustration / header -->
@@ -481,7 +323,6 @@
 				</a>
 			</form>
 		</Card>
-	{/if}
 </div>
 
 <MapModal
