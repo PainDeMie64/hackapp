@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
+source "$ROOT_DIR/scripts/load-env.sh"
 
 echo "==> Exporting remote D1..."
 npx wrangler d1 export hackapp-db --remote --output .wrangler/dump.sql

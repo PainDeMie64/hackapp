@@ -25,11 +25,24 @@ AI-powered prospecting tool that automatically finds companies in a target secto
 ```bash
 git clone git@github.com:PainDeMie64/hackapp.git
 cd hackapp
+cp .env.example .env       # then fill in CLOUDFLARE_API_TOKEN (ask the team lead)
 npm install
 npm start
 ```
 
 `npm start` builds the app, launches the web server (port 5173) with Cloudflare D1, starts n8n (port 5679) with the prospect workflow, and wires everything together. One command, one Ctrl+C to stop.
+
+### Cloudflare access for teammates
+
+You do **not** need your own Cloudflare account. Copy `.env.example` to `.env` and paste the shared API token from the team lead. The account ID is already filled in.
+
+```bash
+# .env
+CLOUDFLARE_ACCOUNT_ID=c4b03b72d6f662c5686f981d2bb8868d
+CLOUDFLARE_API_TOKEN=<paste-token-here>
+```
+
+This gives you access to deploy, push/pull the database, and run `wrangler` commands.
 
 You can also run services individually:
 
