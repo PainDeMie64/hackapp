@@ -1,10 +1,12 @@
-import { Hash, BarChart3, Zap } from "lucide-react";
+import { Hash, BarChart3, Zap, Download } from "lucide-react";
 import type { Prospect } from "../types";
+import { getExportUrl } from "../api";
 
 interface Props {
   prospects: Prospect[];
   sheetUrl: string | null;
   isComplete: boolean;
+  searchId: string | null;
 }
 
 function avgConfidence(prospects: Prospect[]): number {
@@ -18,7 +20,7 @@ function maxConfidence(prospects: Prospect[]): number {
   return Math.max(...prospects.map((p) => map[p.confidence] || 50), 0);
 }
 
-export function StatusBar({ prospects, sheetUrl, isComplete }: Props) {
+export function StatusBar({ prospects, sheetUrl, isComplete, searchId }: Props) {
   if (prospects.length === 0 && !isComplete) return null;
 
   const avg = avgConfidence(prospects);
@@ -62,16 +64,23 @@ export function StatusBar({ prospects, sheetUrl, isComplete }: Props) {
 
       <div className="flex-1" />
 
-      {sheetUrl && (
-        <a
-          href={sheetUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm font-medium text-brand-500 hover:text-brand-600 transition-colors"
-        >
-          Ouvrir Google Sheet →
-        </a>
-      )}
+      <div className="flex items-center gap-2 flex-wrap">
+        {isComplete && searchId && (
+          <>
+            <a href={getExportUrl(searchId, "csv")} className="inline-flex items-center gap-1.5 text-xs font-medium text-surface-600 hover:text-brand-500 bg-surface-50 hover:bg-brand-50 px-3 py-1.5 rounded-lg transition-colors">
+              <Download className="w-3.5 h-3.5" /> CSV
+            </a>
+            <a href={getExportUrl(searchId, "xlsx")} className="inline-flex items-center gap-1.5 text-xs font-medium text-surface-600 hover:text-brand-500 bg-surface-50 hover:bg-brand-50 px-3 py-1.5 rounded-lg transition-colors">
+              <Download className="w-3.5 h-3.5" /> XLSX
+            </a>
+          </>
+        )}
+        {sheetUrl && (
+          <a href={sheetUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-medium text-brand-500 hover:text-brand-600 transition-colors">
+            Google Sheet →
+          </a>
+        )}
+      </div>
     </div>
   );
 }

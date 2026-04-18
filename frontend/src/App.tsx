@@ -7,8 +7,10 @@ import { SearchForm } from "./components/SearchForm";
 import { LoadingView } from "./components/LoadingView";
 import { StatusBar } from "./components/StatusBar";
 import { ProspectTable } from "./components/ProspectTable";
+import { ProspectDetail } from "./components/ProspectDetail";
 import { ReportView } from "./components/ReportView";
 import { HistoryView } from "./components/HistoryView";
+import { ReportsPage } from "./components/ReportsPage";
 import { useSearchStream } from "./hooks/useSearchStream";
 import { startSearch, fetchSearchDetail } from "./api";
 import type { SearchRequest, Prospect } from "./types";
@@ -22,6 +24,7 @@ function App() {
   const [historyProspects, setHistoryProspects] = useState<Prospect[] | null>(null);
   const [historySheetUrl, setHistorySheetUrl] = useState<string | null>(null);
   const [historyReport, setHistoryReport] = useState<string | null>(null);
+  const [selectedProspectIdx, setSelectedProspectIdx] = useState<number | null>(null);
 
   const { prospects: streamProspects, status, sheetUrl: streamSheetUrl, isComplete, error, prospectsFound, totalRequested } =
     useSearchStream(searchId);
@@ -33,6 +36,7 @@ function App() {
   const handleSearch = async (request: SearchRequest) => {
     setIsLoading(true);
     setHistoryProspects(null);
+    setSelectedProspectIdx(null);
     try {
       const result = await startSearch(request);
       setSearchId(result.search_id);
@@ -47,6 +51,7 @@ function App() {
     setHistoryProspects(null);
     setHistorySheetUrl(null);
     setHistoryReport(null);
+    setSelectedProspectIdx(null);
     setPage("search");
   };
 
@@ -56,6 +61,7 @@ function App() {
     setHistoryProspects(null);
     setHistorySheetUrl(null);
     setHistoryReport(null);
+    setSelectedProspectIdx(null);
     setPage(p);
   };
 
@@ -66,50 +72,54 @@ function App() {
       setHistoryProspects(data.prospects);
       setHistorySheetUrl(data.sheet_url);
       setHistoryReport(data.report);
+      setSelectedProspectIdx(null);
       setPage("search");
-    } catch {
-      // ignore
-    }
+    } catch { /* ignore */ }
   };
 
   const isSearching = searchId !== null && !isViewingHistory && !isComplete && streamProspects.length === 0 && !error;
   const hasResults = (searchId !== null && (prospects.length > 0 || isComplete)) || isViewingHistory;
 
+  // Prospect detail view
+  if (selectedProspectIdx !== null && prospects[selectedProspectIdx]) {
+    return (
+      <>
+        <Sidebar currentPage="search" onNavigate={handleNavigate} />
+        <Layout>
+          <ProspectDetail
+            prospect={prospects[selectedProspectIdx]}
+            searchId={searchId!}
+            onBack={() => setSelectedProspectIdx(null)}
+          />
+        </Layout>
+      </>
+    );
+  }
+
   return (
     <>
       <Sidebar currentPage={hasResults ? "search" : page} onNavigate={handleNavigate} />
       <Layout>
-        {/* Dashboard */}
         {page === "home" && !searchId && !isViewingHistory && <Dashboard onNavigate={handleNavigate} />}
 
-        {/* Search form */}
         {page === "search" && !searchId && !isViewingHistory && (
           <SearchForm onSubmit={handleSearch} isLoading={isLoading} />
         )}
 
-        {/* Loading animation */}
         {isSearching && (
-          <LoadingView
-            status={status}
-            prospectsFound={prospectsFound}
-            totalRequested={totalRequested}
-          />
+          <LoadingView status={status} prospectsFound={prospectsFound} totalRequested={totalRequested} />
         )}
 
-        {/* Results */}
         {hasResults && (
           <div className="space-y-6">
             <div className="flex items-center justify-between">
-              <button
-                onClick={handleReset}
-                className="inline-flex items-center gap-2 text-sm font-medium text-surface-500 hover:text-brand-500 transition-colors"
-              >
+              <button onClick={handleReset} className="inline-flex items-center gap-2 text-sm font-medium text-surface-500 hover:text-brand-500 transition-colors">
                 <ArrowLeft className="w-4 h-4" /> Nouvelle recherche
               </button>
               <span className="text-sm text-surface-400">{prospects.length} résultat{prospects.length > 1 ? "s" : ""}</span>
             </div>
 
-            <StatusBar prospects={prospects} sheetUrl={sheetUrl} isComplete={isComplete || isViewingHistory} />
+            <StatusBar prospects={prospects} sheetUrl={sheetUrl} isComplete={isComplete || isViewingHistory} searchId={searchId} />
 
             {!isComplete && !isViewingHistory && status && (
               <div className="flex items-center gap-3 bg-brand-50 rounded-xl px-4 py-3">
@@ -125,34 +135,18 @@ function App() {
               </div>
             )}
 
-            <ProspectTable prospects={prospects} />
+            <ProspectTable prospects={prospects} onSelectProspect={setSelectedProspectIdx} />
 
             <ReportView searchId={searchId!} isComplete={isComplete || isViewingHistory} initialReport={historyReport} />
           </div>
         )}
 
-        {/* History */}
         {page === "history" && !searchId && !isViewingHistory && (
-          <HistoryView
-            onViewResults={handleViewHistoryResult}
-            onNewSearch={() => setPage("search")}
-          />
+          <HistoryView onViewResults={handleViewHistoryResult} onNewSearch={() => setPage("search")} />
         )}
 
-        {/* Reports placeholder */}
         {page === "reports" && !searchId && !isViewingHistory && (
-          <div className="animate-entrance">
-            <h1 className="text-2xl font-bold text-surface-900 mb-6">Rapports</h1>
-            <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-8 text-center">
-              <p className="text-surface-400">Les rapports seront disponibles après une recherche de prospects.</p>
-              <button
-                onClick={() => setPage("search")}
-                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-brand-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-600 transition-colors"
-              >
-                Lancer une recherche
-              </button>
-            </div>
-          </div>
+          <ReportsPage onNewSearch={() => setPage("search")} />
         )}
       </Layout>
     </>

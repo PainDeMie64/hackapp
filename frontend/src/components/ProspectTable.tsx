@@ -11,7 +11,7 @@ function getScore(p: Prospect): number {
   return CONFIDENCE_SCORE[p.confidence] || 50;
 }
 
-function HeroCard({ prospect }: { prospect: Prospect }) {
+function HeroCard({ prospect, onSelect }: { prospect: Prospect; onSelect?: () => void }) {
   const score = getScore(prospect);
 
   return (
@@ -91,6 +91,12 @@ function HeroCard({ prospect }: { prospect: Prospect }) {
               );
             })}
           </div>
+
+          {onSelect && (
+            <button onClick={onSelect} className="btn-shine inline-flex items-center gap-2 mt-4 px-5 py-2.5 bg-brand-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-600 transition-all shadow-sm hover:shadow-md">
+              Plus d'informations <ChevronRight className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Score ring */}
@@ -102,7 +108,7 @@ function HeroCard({ prospect }: { prospect: Prospect }) {
   );
 }
 
-function TimelineRow({ prospect, rank }: { prospect: Prospect; rank: number }) {
+function TimelineRow({ prospect, rank, onSelect }: { prospect: Prospect; rank: number; onSelect?: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const score = getScore(prospect);
   const borderColor = score >= 80 ? "border-l-score-high" : score >= 60 ? "border-l-score-mid" : "border-l-score-low";
@@ -147,6 +153,11 @@ function TimelineRow({ prospect, rank }: { prospect: Prospect; rank: number }) {
             )}
           </div>
 
+          {onSelect && (
+            <button onClick={(e) => { e.stopPropagation(); onSelect(); }} className="text-xs font-semibold text-brand-500 hover:text-brand-600 transition-colors shrink-0">
+              Voir
+            </button>
+          )}
           <ChevronRight className={clsx("w-4 h-4 text-surface-300 transition-transform shrink-0", expanded && "rotate-90")} />
         </div>
 
@@ -191,7 +202,7 @@ function Search(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-export function ProspectTable({ prospects }: { prospects: Prospect[] }) {
+export function ProspectTable({ prospects, onSelectProspect }: { prospects: Prospect[]; onSelectProspect?: (index: number) => void }) {
   if (prospects.length === 0) return null;
 
   const hero = prospects[0];
@@ -200,7 +211,7 @@ export function ProspectTable({ prospects }: { prospects: Prospect[] }) {
   return (
     <div className="space-y-6">
       {/* Hero card for #1 */}
-      <HeroCard prospect={hero} />
+      <HeroCard prospect={hero} onSelect={onSelectProspect ? () => onSelectProspect(0) : undefined} />
 
       {/* Timeline for the rest */}
       {rest.length > 0 && (
@@ -210,7 +221,7 @@ export function ProspectTable({ prospects }: { prospects: Prospect[] }) {
 
           <div className="space-y-3">
             {rest.map((p, i) => (
-              <TimelineRow key={`${p.name}-${i}`} prospect={p} rank={i + 2} />
+              <TimelineRow key={`${p.name}-${i}`} prospect={p} rank={i + 2} onSelect={onSelectProspect ? () => onSelectProspect(i + 1) : undefined} />
             ))}
           </div>
         </div>
