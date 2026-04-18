@@ -26,5 +26,11 @@
 			"database_name": "hackapp-db",
 			"database_id": "197c4291-7afa-4722-95b7-83ba5d95eb83"
 		}
+	],
+	"r2_buckets": [
+		{
+			"binding": "STORAGE",
+			"bucket_name": "hackapp-storage"
+		}
 	]
 }
