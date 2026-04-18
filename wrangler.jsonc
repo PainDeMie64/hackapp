@@ -39,6 +39,11 @@
 	 * Listed here for type generation only — values come from Cloudflare dashboard or wrangler secret.
 	 */
 	"vars": {
-		"ANTHROPIC_API_KEY": ""
+		"ANTHROPIC_API_KEY": "",
+		"AWS_ACCESS_KEY_ID": "",
+		"AWS_SECRET_ACCESS_KEY": "",
+		"AWS_SESSION_TOKEN": "",
+		"AWS_REGION": "us-west-2",
+		"BEDROCK_MODEL": "mistral.mistral-large-2402-v1:0"
 	}
 }

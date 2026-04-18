@@ -124,14 +124,19 @@ export async function runPipeline(
 	db: Db,
 	pdfText: string,
 	sourceUrl: string,
-	sourceName?: string
+	sourceName?: string,
+	bedrock?: import('$lib/server/llm/bedrock.js').BedrockClient
 ): Promise<PipelineResult> {
 	const sourceId = await upsertSource(db, sourceUrl, sourceName);
 	const errors: string[] = [];
 
+	if (!bedrock) {
+		return { sourceId, companiesProcessed: 0, results: [], errors: ['BedrockClient required'] };
+	}
+
 	let extraction;
 	try {
-		extraction = await extractCompaniesFromText(pdfText, sourceUrl);
+		extraction = await extractCompaniesFromText(pdfText, sourceUrl, bedrock);
 	} catch (e) {
 		return {
 			sourceId,
