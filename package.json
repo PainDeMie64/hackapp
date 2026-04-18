@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "start": "./dev.sh",
     "dev": "vite dev",
     "build": "vite build",
     "preview": "npm run build && wrangler pages dev",

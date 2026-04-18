@@ -26,16 +26,17 @@ AI-powered prospecting tool that automatically finds companies in a target secto
 git clone git@github.com:PainDeMie64/hackapp.git
 cd hackapp
 npm install
+npm start
 ```
 
-Run both in separate terminals:
+`npm start` builds the app, launches the web server (port 5173) with Cloudflare D1, starts n8n (port 5679) with the prospect workflow, and wires everything together. One command, one Ctrl+C to stop.
+
+You can also run services individually:
 
 ```bash
-npm run dev          # SvelteKit frontend → http://localhost:5173
-npm run n8n          # n8n workflow engine → http://localhost:5679
+npm run dev          # SvelteKit only (Vite dev server, no D1)
+npm run n8n          # n8n only
 ```
-
-The frontend and n8n must both be running for the prospecting agent to work.
 
 ## n8n Workflow (Prospect Agent)
 
@@ -87,7 +88,8 @@ git pull && npm run n8n:import                                  # get teammate's
 
 | Command | What it does |
 |---------|-------------|
-| `npm run dev` | Start SvelteKit dev server (port 5173) |
+| `npm start` | **Launch everything** (web app + n8n + D1) |
+| `npm run dev` | SvelteKit only (Vite dev server, no D1) |
 | `npm run n8n` | Start n8n + import + auto-export watcher (port 5679) |
 | `npm run n8n:export` | Export workflows from n8n UI → git |
 | `npm run n8n:import` | Import workflows from git → running n8n |

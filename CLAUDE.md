@@ -24,8 +24,9 @@ ALTEN Commercial Intelligence & Prospecting Agent for the AI For Business Hackat
 - `n8n/` — workflow JSON, setup/import/export/watch scripts
 
 ## Commands
-- `npm run dev` — start SvelteKit dev server (port 5173)
-- `npm run n8n` — start n8n + import workflows + auto-export watcher (port 5679)
+- `npm start` — launch everything (web app on 5173 + n8n on 5679 + D1)
+- `npm run dev` — SvelteKit only (Vite dev server, no D1)
+- `npm run n8n` — n8n only + import workflows + auto-export watcher
 - `npm run n8n:export` — export workflows from n8n UI to git
 - `npm run n8n:import` — import workflows from git to running n8n
 - `npm run build` — production build
@@ -51,6 +52,5 @@ ALTEN Commercial Intelligence & Prospecting Agent for the AI For Business Hackat
 ## Setup on Fresh Clone
 ```bash
 npm install          # also runs cf-typegen via prepare script
-npm run dev          # SvelteKit frontend
-npm run n8n          # n8n workflow engine (separate terminal)
+npm start            # launches web app + n8n + D1 — one command
 ```
