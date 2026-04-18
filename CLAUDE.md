@@ -25,6 +25,8 @@ ALTEN Commercial Intelligence & Prospecting Agent for the AI For Business Hackat
 - `npm run dev` — SvelteKit only (Vite dev server, no D1)
 - `npm run build` — production build
 - `npm run check` — type check
+- `npm test` — run tests (vitest + Cloudflare Workers runtime)
+- `npm run test:watch` — run tests in watch mode
 - `npm run deploy` — build + deploy to Cloudflare Pages
 - `npm run db:push` — overwrite remote D1 with local data
 - `npm run db:pull` — overwrite local D1 with remote data
