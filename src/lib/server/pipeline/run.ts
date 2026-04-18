@@ -1,6 +1,6 @@
 import type { Db } from '$lib/server/db/index.js';
 import { sources, scrapeResults, companies, news, prospectScores } from '$lib/server/db/schema.js';
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 import { scrapeUrl } from '$lib/server/scraper/scrape-url.js';
 import { BedrockClient, parseJsonResponse } from '$lib/server/llm/index.js';
 import { extractCompaniesFromText } from '$lib/server/prospect/extract.js';
@@ -53,8 +53,10 @@ export async function runFullPipeline(config: PipelineConfig): Promise<PipelineR
 	const phases = { scraped: 0, companiesExtracted: 0, newsInserted: 0, companiesScored: 0 };
 	const sem = new Semaphore(LLM_CONCURRENCY);
 
-	// ── Phase 1: Scrape active sources ──────────────────────────────────
-	const allSources = await db.select().from(sources).where(eq(sources.isActive, true));
+	// ── Phase 1: Scrape priority active sources ─────────────────────────
+	const allSources = await db.select().from(sources).where(
+		and(eq(sources.isActive, true), eq(sources.isPriority, true))
+	);
 	const scrapeSettled = await Promise.allSettled(
 		allSources.slice(0, 20).map(async (source) => {
 			try {

@@ -20,13 +20,11 @@
     "db:studio": "drizzle-kit studio",
     "score": "./scripts/score-prospects.sh",
     "ingest": "npx tsx scripts/ingest-pdfs.ts",
-    "export:sheets": "npx tsx scripts/export-sheets.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "devDependencies": {
     "@cloudflare/vitest-pool-workers": "^0.14.7",
-    "@playwright/test": "^1.59.1",
     "@sveltejs/adapter-auto": "^7.0.0",
     "@sveltejs/adapter-cloudflare": "^7.2.8",
     "@sveltejs/kit": "^2.50.2",
@@ -47,11 +45,9 @@
   "dependencies": {
     "@anthropic-ai/bedrock-sdk": "^0.28.1",
     "@anthropic-ai/sdk": "^0.90.0",
-    "@types/leaflet": "^1.9.21",
+    "@aws-sdk/client-bedrock-runtime": "^3.1032.0",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
-    "googleapis": "^171.4.0",
-    "leaflet": "^1.9.4",
     "lucide-svelte": "^1.0.1",
     "pdf-parse": "^2.4.5",
     "tailwind-merge": "^3.5.0",
