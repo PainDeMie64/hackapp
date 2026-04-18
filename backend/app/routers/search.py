@@ -56,6 +56,30 @@ async def stream_search(search_id: str):
     )
 
 
+@router.get("")
+async def list_searches():
+    results = []
+    for entry in store.values():
+        session = entry["session"]
+        if session.status in ("completed", "error"):
+            best_confidence = "low"
+            for p in session.prospects:
+                if p.confidence == "high":
+                    best_confidence = "high"
+                    break
+                if p.confidence == "medium":
+                    best_confidence = "medium"
+            results.append({
+                "search_id": session.search_id,
+                "sector": session.request.sector,
+                "location": session.request.location,
+                "num_prospects": len(session.prospects),
+                "status": session.status,
+                "best_confidence": best_confidence,
+            })
+    return results
+
+
 @router.get("/{search_id}")
 async def get_search(search_id: str):
     entry = get_session(search_id)

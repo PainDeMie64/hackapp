@@ -8,9 +8,10 @@ import { LoadingView } from "./components/LoadingView";
 import { StatusBar } from "./components/StatusBar";
 import { ProspectTable } from "./components/ProspectTable";
 import { ReportView } from "./components/ReportView";
+import { HistoryView } from "./components/HistoryView";
 import { useSearchStream } from "./hooks/useSearchStream";
-import { startSearch } from "./api";
-import type { SearchRequest } from "./types";
+import { startSearch, fetchSearchDetail } from "./api";
+import type { SearchRequest, Prospect } from "./types";
 
 type Page = "home" | "search" | "history" | "reports";
 
@@ -18,12 +19,20 @@ function App() {
   const [page, setPage] = useState<Page>("home");
   const [searchId, setSearchId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [historyProspects, setHistoryProspects] = useState<Prospect[] | null>(null);
+  const [historySheetUrl, setHistorySheetUrl] = useState<string | null>(null);
+  const [historyReport, setHistoryReport] = useState<string | null>(null);
 
-  const { prospects, status, sheetUrl, isComplete, error, prospectsFound, totalRequested } =
+  const { prospects: streamProspects, status, sheetUrl: streamSheetUrl, isComplete, error, prospectsFound, totalRequested } =
     useSearchStream(searchId);
+
+  const isViewingHistory = historyProspects !== null;
+  const prospects = isViewingHistory ? historyProspects : streamProspects;
+  const sheetUrl = isViewingHistory ? historySheetUrl : streamSheetUrl;
 
   const handleSearch = async (request: SearchRequest) => {
     setIsLoading(true);
+    setHistoryProspects(null);
     try {
       const result = await startSearch(request);
       setSearchId(result.search_id);
@@ -35,29 +44,46 @@ function App() {
   const handleReset = () => {
     setSearchId(null);
     setIsLoading(false);
+    setHistoryProspects(null);
+    setHistorySheetUrl(null);
+    setHistoryReport(null);
     setPage("search");
   };
 
   const handleNavigate = (p: Page) => {
-    if (p !== "search") {
-      setSearchId(null);
-      setIsLoading(false);
-    }
+    setSearchId(null);
+    setIsLoading(false);
+    setHistoryProspects(null);
+    setHistorySheetUrl(null);
+    setHistoryReport(null);
     setPage(p);
   };
 
-  const isSearching = searchId !== null && !isComplete && prospects.length === 0 && !error;
-  const hasResults = searchId !== null && (prospects.length > 0 || isComplete);
+  const handleViewHistoryResult = async (id: string) => {
+    try {
+      const data = await fetchSearchDetail(id);
+      setSearchId(id);
+      setHistoryProspects(data.prospects);
+      setHistorySheetUrl(data.sheet_url);
+      setHistoryReport(data.report);
+      setPage("search");
+    } catch {
+      // ignore
+    }
+  };
+
+  const isSearching = searchId !== null && !isViewingHistory && !isComplete && streamProspects.length === 0 && !error;
+  const hasResults = (searchId !== null && (prospects.length > 0 || isComplete)) || isViewingHistory;
 
   return (
     <>
       <Sidebar currentPage={hasResults ? "search" : page} onNavigate={handleNavigate} />
       <Layout>
         {/* Dashboard */}
-        {page === "home" && !searchId && <Dashboard onNavigate={handleNavigate} />}
+        {page === "home" && !searchId && !isViewingHistory && <Dashboard onNavigate={handleNavigate} />}
 
         {/* Search form */}
-        {page === "search" && !searchId && (
+        {page === "search" && !searchId && !isViewingHistory && (
           <SearchForm onSubmit={handleSearch} isLoading={isLoading} />
         )}
 
@@ -73,7 +99,6 @@ function App() {
         {/* Results */}
         {hasResults && (
           <div className="space-y-6">
-            {/* Back link + count */}
             <div className="flex items-center justify-between">
               <button
                 onClick={handleReset}
@@ -81,14 +106,12 @@ function App() {
               >
                 <ArrowLeft className="w-4 h-4" /> Nouvelle recherche
               </button>
-              {isComplete && (
-                <span className="text-sm text-surface-400">{prospects.length} résultat{prospects.length > 1 ? "s" : ""}</span>
-              )}
+              <span className="text-sm text-surface-400">{prospects.length} résultat{prospects.length > 1 ? "s" : ""}</span>
             </div>
 
-            <StatusBar prospects={prospects} sheetUrl={sheetUrl} isComplete={isComplete} />
+            <StatusBar prospects={prospects} sheetUrl={sheetUrl} isComplete={isComplete || isViewingHistory} />
 
-            {!isComplete && status && (
+            {!isComplete && !isViewingHistory && status && (
               <div className="flex items-center gap-3 bg-brand-50 rounded-xl px-4 py-3">
                 <div className="w-4 h-4 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
                 <span className="text-sm text-brand-700 font-medium">{status}</span>
@@ -104,28 +127,20 @@ function App() {
 
             <ProspectTable prospects={prospects} />
 
-            <ReportView searchId={searchId!} isComplete={isComplete} />
+            <ReportView searchId={searchId!} isComplete={isComplete || isViewingHistory} initialReport={historyReport} />
           </div>
         )}
 
-        {/* History placeholder */}
-        {page === "history" && !searchId && (
-          <div className="animate-entrance">
-            <h1 className="text-2xl font-bold text-surface-900 mb-6">Historique des Recherches</h1>
-            <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-8 text-center">
-              <p className="text-surface-400">Aucune recherche passée pour le moment.</p>
-              <button
-                onClick={() => setPage("search")}
-                className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-brand-500 text-white rounded-xl text-sm font-semibold hover:bg-brand-600 transition-colors"
-              >
-                Lancer une recherche
-              </button>
-            </div>
-          </div>
+        {/* History */}
+        {page === "history" && !searchId && !isViewingHistory && (
+          <HistoryView
+            onViewResults={handleViewHistoryResult}
+            onNewSearch={() => setPage("search")}
+          />
         )}
 
         {/* Reports placeholder */}
-        {page === "reports" && !searchId && (
+        {page === "reports" && !searchId && !isViewingHistory && (
           <div className="animate-entrance">
             <h1 className="text-2xl font-bold text-surface-900 mb-6">Rapports</h1>
             <div className="bg-white rounded-2xl border border-surface-200 shadow-sm p-8 text-center">

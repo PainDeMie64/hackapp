@@ -6,10 +6,11 @@ import { fetchReport } from "../api";
 interface Props {
   searchId: string;
   isComplete: boolean;
+  initialReport?: string | null;
 }
 
-export function ReportView({ searchId, isComplete }: Props) {
-  const [report, setReport] = useState<string | null>(null);
+export function ReportView({ searchId, isComplete, initialReport }: Props) {
+  const [report, setReport] = useState<string | null>(initialReport ?? null);
   const [loading, setLoading] = useState(false);
 
   if (!isComplete) return null;
