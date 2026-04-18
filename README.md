@@ -84,6 +84,7 @@ Where to get data. Populated by the team, consumed by the scraper.
 |-------------|---|
 | `url` | The source URL (unique) |
 | `type` | `newsletter`, `government`, `directory`, `news`, `company_website`, `other` |
+| `is_priority` | Priority source scraped by default (Pappers, Societe.com, BODACC, INSEE, AMF, FIBEN, DARES) |
 | `is_active` | Whether the source is reachable (auto-updated by scraper) |
 | `last_crawled_at` | When we last scraped this source |
 
@@ -145,7 +146,7 @@ Bucket: `hackapp-storage`, binding: `STORAGE`.
 
 | Method | Path | What it does |
 |--------|------|-------------|
-| `POST` | `/api/scrape` | Scrape all active sources (or specific ones via `{ source_ids: [...] }`) |
+| `POST` | `/api/scrape` | Scrape priority sources by default. Pass `{ "all": true }` for all active sources, or `{ "source_ids": [...] }` for specific ones. |
 | `GET` | `/api/health` | System status (DB + R2 connectivity) |
 
 More endpoints defined in SPEC.md but not yet implemented: company CRUD, enrichment triggers, news retrieval, report fetching.

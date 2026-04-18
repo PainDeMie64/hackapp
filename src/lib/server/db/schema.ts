@@ -5,6 +5,7 @@ export const sources = sqliteTable('sources', {
 	url: text('url').notNull().unique(),
 	name: text('name'),
 	type: text('type'),
+	isPriority: integer('is_priority', { mode: 'boolean' }).default(false),
 	isActive: integer('is_active', { mode: 'boolean' }).default(true),
 	lastCrawledAt: integer('last_crawled_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
@@ -30,12 +31,42 @@ export const companies = sqliteTable('companies', {
 	logoUrl: text('logo_url'),
 	status: text('status').default('active'),
 	enrichmentStatus: text('enrichment_status').default('pending'),
+	prospectScore: integer('prospect_score'),
+	prospectBand: text('prospect_band'),
+	scoredAt: integer('scored_at', { mode: 'timestamp' }),
 	lastEnrichedAt: integer('last_enriched_at', { mode: 'timestamp' }),
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()).$onUpdateFn(() => new Date())
 }, (table) => ([
 	index('companies_sector').on(table.sector),
 	index('companies_country').on(table.locationCountry)
+]));
+
+export const scoringDimensions = [
+	'firmographic',
+	'recruitment',
+	'financial',
+	'project',
+	'intent',
+	'regulatory',
+	'competitive'
+] as const;
+
+export type ScoringDimension = typeof scoringDimensions[number];
+
+export const prospectBands = ['hot', 'warm', 'qualified', 'cold'] as const;
+export type ProspectBand = typeof prospectBands[number];
+
+export const companyScores = sqliteTable('company_scores', {
+	id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+	companyId: text('company_id').notNull().references(() => companies.id),
+	dimension: text('dimension').notNull(),
+	score: integer('score').notNull(),
+	signals: text('signals'),
+	scoredAt: integer('scored_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+}, (table) => ([
+	uniqueIndex('scores_company_dimension').on(table.companyId, table.dimension),
+	index('scores_company').on(table.companyId)
 ]));
 
 export const news = sqliteTable('news', {
@@ -76,6 +107,7 @@ export const scrapeResults = sqliteTable('scrape_results', {
 
 	// ── URL info ──────────────────────────────────────────────────────────
 	url: text('url').notNull(),
+	finalUrl: text('final_url'),
 	normalizedUrl: text('normalized_url').notNull(),
 	baseDomain: text('base_domain').notNull(),
 	path: text('path').notNull(),
@@ -107,6 +139,7 @@ export const scrapeResults = sqliteTable('scrape_results', {
 	// ── Content pointers (full bodies live in R2) ─────────────────────────
 	rawHtmlR2Key: text('raw_html_r2_key'),
 	extractedTextR2Key: text('extracted_text_r2_key'),
+	contentHash: text('content_hash'),
 
 	// ── Structured data ───────────────────────────────────────────────────
 	// Raw JSON-LD from the page, stored as a JSON string.
@@ -116,7 +149,11 @@ export const scrapeResults = sqliteTable('scrape_results', {
 	// ── Crawl info ────────────────────────────────────────────────────────
 	scrapedAt: integer('scraped_at', { mode: 'timestamp' }).notNull().$defaultFn(() => new Date()),
 	scrapeDurationMs: integer('scrape_duration_ms'),
-	sourceId: text('source_id').notNull().references(() => sources.id)
+	sourceId: text('source_id').notNull().references(() => sources.id),
+
+	// ── Pipeline status (for downstream LLM consumer) ─────────────────────
+	llmStatus: text('llm_status').default('pending'),
+	processedAt: integer('processed_at', { mode: 'timestamp' })
 }, (table) => ([
 	// The LLM pipeline queries by source to process unprocessed pages
 	index('scrape_results_source_id').on(table.sourceId),
@@ -131,8 +168,93 @@ export const scrapeResults = sqliteTable('scrape_results', {
 	index('scrape_results_normalized_url').on(table.normalizedUrl),
 
 	// HTTP-level filtering (e.g., only process 200s)
-	index('scrape_results_status_code').on(table.statusCode)
+	index('scrape_results_status_code').on(table.statusCode),
+
+	// Composite index for the LLM pipeline: "pending 200s for a source, in order"
+	index('scrape_results_pipeline').on(table.sourceId, table.llmStatus, table.scrapedAt)
 ]));
+
+// ---------------------------------------------------------------------------
+// Prospect scoring — 50 criteria from criteria_prospect.md
+// One row per company, each criterion scored 0-100 by the automated system.
+// ---------------------------------------------------------------------------
+export const prospectScores = sqliteTable('prospect_scores', {
+	id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+	companyId: text('company_id').notNull().references(() => companies.id).unique(),
+
+	// ── 1. Firmographics (20% weight) ──────────────────────────────────────
+	sectorAlignment: integer('sector_alignment'),
+	nafCodeMatch: integer('naf_code_match'),
+	companySize: integer('company_size'),
+	rdDepartmentSize: integer('rd_department_size'),
+	geographicProximity: integer('geographic_proximity'),
+	regionalSpecialization: integer('regional_specialization'),
+	companyMaturity: integer('company_maturity'),
+	organizationalStructure: integer('organizational_structure'),
+
+	// ── 2. Financial signals (15% weight) ──────────────────────────────────
+	revenueGrowthGap: integer('revenue_growth_gap'),
+	rdSpendingTrend: integer('rd_spending_trend'),
+	capexSpikes: integer('capex_spikes'),
+	capexToOpexShift: integer('capex_to_opex_shift'),
+	recentFunding: integer('recent_funding'),
+	publicGrants: integer('public_grants'),
+	marginCompression: integer('margin_compression'),
+	hiringFreezeWithProjects: integer('hiring_freeze_with_projects'),
+	externalSpendInFinancials: integer('external_spend_in_financials'),
+
+	// ── 3. Hiring signals (25% weight) ──────────────────────────────────────
+	engineeringJobVolume: integer('engineering_job_volume'),
+	staleJobPostings: integer('stale_job_postings'),
+	repeatedRepostings: integer('repeated_repostings'),
+	contractFreelanceLanguage: integer('contract_freelance_language'),
+	rareSkillsDemand: integer('rare_skills_demand'),
+	emergingTechDemand: integer('emerging_tech_demand'),
+	highTurnoverSignals: integer('high_turnover_signals'),
+	recruiterHiringWave: integer('recruiter_hiring_wave'),
+	aboveMarketSalaries: integer('above_market_salaries'),
+
+	// ── 4. Project & expansion signals (15% weight) ─────────────────────────
+	physicalExpansion: integer('physical_expansion'),
+	newProductLaunch: integer('new_product_launch'),
+	platformMigration: integer('platform_migration'),
+	programMilestones: integer('program_milestones'),
+	digitalTransformation: integer('digital_transformation'),
+	erpPlmMigration: integer('erp_plm_migration'),
+	cloudMigration: integer('cloud_migration'),
+	strategicPartnerships: integer('strategic_partnerships'),
+
+	// ── 5. Organizational signals ───────────────────────────────────────────
+	leadershipChange: integer('leadership_change'),
+	maActivity: integer('ma_activity'),
+	existingConsultingUsage: integer('existing_consulting_usage'),
+
+	// ── 6. Technology signals ───────────────────────────────────────────────
+	legacyModernization: integer('legacy_modernization'),
+	techDebtIndicators: integer('tech_debt_indicators'),
+	cybersecurityGaps: integer('cybersecurity_gaps'),
+	industrySpecificSoftware: integer('industry_specific_software'),
+	iotIndustry4Adoption: integer('iot_industry4_adoption'),
+
+	// ── 7. Regulatory triggers ──────────────────────────────────────────────
+	euRegulatoryPressure: integer('eu_regulatory_pressure'),
+	frenchDefenseBudget: integer('french_defense_budget'),
+	certificationNeeds: integer('certification_needs'),
+
+	// ── 8. News & event triggers ────────────────────────────────────────────
+	majorContractWon: integer('major_contract_won'),
+	crisisEvent: integer('crisis_event'),
+	industryEventPresence: integer('industry_event_presence'),
+
+	// ── Aggregate scores ────────────────────────────────────────────────────
+	totalScore: integer('total_score'),
+	scoreLabel: text('score_label'),
+
+	// ── Timestamps ──────────────────────────────────────────────────────────
+	scoredAt: integer('scored_at', { mode: 'timestamp' }),
+	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()).$onUpdateFn(() => new Date())
+});
 
 // ---------------------------------------------------------------------------
 // Type exports
@@ -141,7 +263,11 @@ export type Source = typeof sources.$inferSelect;
 export type NewSource = typeof sources.$inferInsert;
 export type Company = typeof companies.$inferSelect;
 export type NewCompany = typeof companies.$inferInsert;
+export type CompanyScore = typeof companyScores.$inferSelect;
+export type NewCompanyScore = typeof companyScores.$inferInsert;
 export type NewsEntry = typeof news.$inferSelect;
 export type NewNewsEntry = typeof news.$inferInsert;
 export type ScrapeResult = typeof scrapeResults.$inferSelect;
 export type NewScrapeResult = typeof scrapeResults.$inferInsert;
+export type ProspectScore = typeof prospectScores.$inferSelect;
+export type NewProspectScore = typeof prospectScores.$inferInsert;

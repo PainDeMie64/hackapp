@@ -40,7 +40,7 @@ Steps 1–3 run periodically. Not triggered by the user.
 | Step | Owner | Description |
 |------|-------|-------------|
 | 1 | Other team | Populate the `sources` table with ~1000 website URLs (newsletters, government registries, company directories). |
-| 2 | **Us** | `POST /api/scrape` reads all active sources from the `sources` table, scrapes each URL, and stores raw content in R2 + metadata in the `scrape_results` table. Optionally pass `{ source_ids: [...] }` to scrape specific sources. |
+| 2 | **Us** | `POST /api/scrape` scrapes **priority sources** by default (`is_priority = true`). Pass `{ "all": true }` to scrape all active sources, or `{ "source_ids": [...] }` for specific ones. Stores raw content in R2 + metadata in the `scrape_results` table. |
 | 3 | **Us** | From the scraped data, upsert rows in the `companies` table. Populate only objective, factual fields. No subjective analysis. No news. |
 
 ### Phase B — On-demand news enrichment (user-triggered)
@@ -68,6 +68,7 @@ The original websites/URLs from the CSV. Each source can yield information about
 | `url` | text | unique, not null | The source website URL |
 | `name` | text | | Human-readable name (e.g., "Societe.com") |
 | `type` | text | | `newsletter`, `government`, `directory`, `news`, `company_website`, `other` |
+| `is_priority` | integer | default 0 | Priority source used by default in scraping (Pappers, Societe.com, BODACC, INSEE, AMF, FIBEN, DARES) |
 | `is_active` | integer | default 1 | Whether the source is currently reachable (0/1) |
 | `last_crawled_at` | integer | | Last time we extracted data from this source (Unix timestamp) |
 | `created_at` | integer | | Row creation time |
