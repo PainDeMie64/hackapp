@@ -1,0 +1,30 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "hackapp",
+	"compatibility_date": "2026-04-18",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"nodejs_als"
+	],
+	"pages_build_output_dir": ".svelte-kit/cloudflare",
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	/**
+	 * D1 Database
+	 * Create with: npx wrangler d1 create hackapp-db
+	 * Then replace the database_id below with the real ID.
+	 */
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "hackapp-db",
+			"database_id": "197c4291-7afa-4722-95b7-83ba5d95eb83"
+		}
+	]
+}
