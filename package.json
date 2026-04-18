@@ -18,6 +18,7 @@
     "db:push": "./scripts/db-push.sh",
     "db:pull": "./scripts/db-pull.sh",
     "db:studio": "drizzle-kit studio",
+    "score": "./scripts/score-prospects.sh",
     "test": "vitest run",
     "test:watch": "vitest"
   },
